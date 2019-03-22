@@ -1,0 +1,72 @@
+<template name="passengerGenerator">
+  <div class="element-wrapper">
+    <div class="element-actions">
+      <form class="form-inline justify-content-sm-end">
+        <select class="form-control form-control-sm rounded">
+          <option value="Pending">
+            Age
+          </option>
+          <option value="Active">
+            Luggage Weight
+          </option>
+          <option value="Cancelled">
+            Row
+          </option>
+          <option value="Cancelled">
+            Zone
+          </option>
+          <option value="Cancelled">
+            WilMA
+          </option>
+        </select>
+      </form>
+    </div>
+    <h6 class="element-header">
+      Passengers Boarding
+    </h6>
+    <div class="element-box">
+      <table class="table table-lightborder table-striped">
+        <thead>
+          <tr>
+            <th>
+              Serial No.
+            </th>
+            <th>
+              Age
+            </th>
+            <th>
+              Luggage Weight
+            </th>
+            <th>
+              Walking Speed
+            </th>
+            <th>
+              Settling Time
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each passengers}}
+            <tr>
+              <td>
+                {{serialNo}}
+              </td>
+              <td>
+                {{age}}
+              </td>
+              <td>
+                {{luggageWeight}}
+              </td>
+              <td>
+                {{walkingSpeed}}
+              </td>
+              <td>
+                {{settlingTime}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

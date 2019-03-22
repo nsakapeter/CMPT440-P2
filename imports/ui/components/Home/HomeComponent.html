@@ -1,0 +1,31 @@
+<template name="Home">
+  <div class="content-i">
+  <div class="content-box p-0 mb-0 mb-auto pt-0" style="width: 100%; height:100vh; z-index: 1; overflow: auto;">
+    <div class="element-wrapper pb-0" style="">
+      <div class="element-box">
+        <form>
+          <div class="steps-w">
+            <div class="step-triggers">
+              <a class="step-trigger {{#if isCurrentTab 'capacityForm'}}active{{/if}}" data-name="capacityForm">Capacity Info</a>
+              <a class="step-trigger {{#if isCurrentTab 'passengerInfo'}}active{{/if}}" data-name="passengerInfo">Passenger Info</a>
+              <a class="step-trigger {{#if isCurrentTab 'boardingProcess'}}active{{/if}}"  data-name="boardingProcess">Boarding Process</a>
+            </div>
+            <div class="step-contents" style="">
+              <div class="step-content {{#if isCurrentTab 'capacityForm'}}active{{/if}}">
+                {{> capacityForm}}
+              </div>
+              <div class="step-content {{#if isCurrentTab 'passengerInfo'}}active{{/if}}">
+                {{> passengerInfo}}
+              </div>
+              <div class="step-content {{#if isCurrentTab 'boardingProcess'}}active{{/if}}">
+                {{> boardingProcess}}
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</template>

@@ -1,0 +1,43 @@
+<template name="dataGenerator">
+  <div class="element-wrapper">
+    <div class="element-actions">
+      <form class="form-inline justify-content-sm-end">
+        <select class="form-control form-control-sm rounded">
+          <option value="Pending">
+            Uniform
+          </option>
+          <option value="Active">
+            Normal
+          </option>
+          <option value="Cancelled">
+            Exponential
+          </option>
+        </select>
+      </form>
+    </div>
+    <h6 class="element-header">
+      {{title}}
+    </h6>
+    <button class="btn btn-primary m-auto" type="submit"> Visualize Distribution</button>
+    <div class="element-box pl-0">
+      <table class="table table-lightborder">
+        <thead>
+          <tr>
+            <th>
+              Randomly Generated
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each ages}}
+            <tr>
+              <td>
+                {{.}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

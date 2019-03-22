@@ -1,0 +1,41 @@
+{
+  "name": "meteor-boilerplate",
+  "version": "1.0.0",
+  "description": "This boilerplate is here to give you a simple starting point for your meteor projects.",
+  "main": "index.js",
+  "dependencies": {
+    "babel-runtime": "^6.23.0",
+    "bcrypt": "^3.0.4",
+    "calculess": "^1.0.2",
+    "fibers": "^3.1.1",
+    "jquery": "^3.3.1",
+    "mathjs": "^5.5.0",
+    "moment": "^2.24.0",
+    "python-shell": "^1.0.7",
+    "tachyons": "^4.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.0.0",
+    "babel-eslint": "^7.2.3",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "scripts": {
+    "start": "meteor --settings settings.json",
+    "test": "meteor test --port 4400 --driver-package=practicalmeteor:mocha",
+    "lint": "eslint --ignore-pattern '*.test.js' 'client/*.js' 'server/*.js' 'imports/**/*.js'",
+    "test-cli": "meteor test --once --driver-package=dispatch:mocha",
+    "cli": "npm run lint && npm run test-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matteodem/meteor-boilerplate.git"
+  },
+  "author": "Matteo De Micheli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/matteodem/meteor-boilerplate/issues"
+  },
+  "homepage": "https://github.com/matteodem/meteor-boilerplate#readme"
+}
