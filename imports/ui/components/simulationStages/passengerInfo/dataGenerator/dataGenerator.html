@@ -18,7 +18,7 @@
     <h6 class="element-header">
       {{title}}
     </h6>
-    <button class="btn btn-primary m-auto" type="submit"> Visualize Distribution</button>
+    <button class="btn btn-primary m-auto visualize" type="submit"> Visualize Distribution</button>
     <div class="element-box pl-0">
       <table class="table table-lightborder">
         <thead>
@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each ages}}
+          {{#each dataToVisualize}}
             <tr>
               <td>
                 {{.}}

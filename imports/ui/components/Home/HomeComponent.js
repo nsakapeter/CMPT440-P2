@@ -69,6 +69,8 @@ Template.Home.onRendered(function() {
 	Meteor.Loader.loadJs("/js/main.js");
 	Meteor.Loader.loadJs("/js/parsley.js");
 	Meteor.Loader.loadJs("/js/jquery-asRange.js");
+	Meteor.Loader.loadJs("/js/bootstrap/dist/js/bootstrap.js");
+	Meteor.Loader.loadCss("/js/bootstrap/dist/css/bootstrap.css");
 });
 
 

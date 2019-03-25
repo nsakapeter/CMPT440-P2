@@ -1,10 +1,18 @@
 <template name="Graph">
-  <div class="c-card u-p-medium">
-      <div class="u-flex u-justify-between u-align-items-center ">
-          <h3 class="c-card__title">Simulations</h3>
-          <span class="u-text-small u-text-uppercase u-text-mute"> {{modelName}} Model</span>
-      </div>
-      <div id="chart-{{random_id}}" class="showInDetail">
-  	  </div>
+  <div id="Graph">
+    <div class="modal fade onboarding-modal animated show">
+      <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center Graph create-event" style="transform: none !important; -webkit-transform: none !important;">
+            <div class="modal-content text-center">
+                <div class="modal-body">
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span class="close-label">Close</span><span class="os-icon os-icon-close"></span></button>
+                    <div id="chart" class="mt-5">
+
+                    </div>
+                </div>
+              </div>
+          </div>
+        </div>
+    </div>
   </div>
 </template>

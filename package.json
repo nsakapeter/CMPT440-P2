@@ -12,6 +12,7 @@
     "mathjs": "^5.5.0",
     "moment": "^2.24.0",
     "python-shell": "^1.0.7",
+    "rng-js": "^1.0.1",
     "tachyons": "^4.7.4"
   },
   "devDependencies": {

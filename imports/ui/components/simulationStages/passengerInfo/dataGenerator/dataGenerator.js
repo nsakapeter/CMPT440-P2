@@ -1,4 +1,7 @@
+import * as RNG from 'rng-js';
+// var RNG = require('rng-js');
 
+dataToVisualize = [];
 if(Meteor.isClient){
 
 
@@ -6,20 +9,25 @@ if(Meteor.isClient){
 
 
 Template.dataGenerator.helpers({
-	ages(){
-		return Template.instance().ages.get();
+	dataToVisualize(){
+		return Template.instance().dataToVisualize.get();
 	}
 });
 
 Template.dataGenerator.events({
-
+	'click .visualize'(event, instance) {
+		event.preventDefault();
+		event.stopPropagation();
+		dataToVisualize = instance.generatedData.get();
+		Modal.show("Graph");
+	}
 });
 
 Template.dataGenerator.onCreated(function() {
 
 	var self = this;
-	this.ages = new ReactiveVar([23, 45, 27, 98, 28, 29, 18, 22, 74, 23, 34,])
-
+	// console.log(RNG);
+	// var rng = new RNG('Example');
 
 
 
@@ -27,6 +35,11 @@ Template.dataGenerator.onCreated(function() {
 });
 
 Template.dataGenerator.onRendered(function() {
-
+	alert(appScopeVariable.noOfPassengers.get());
+	var array = [];
+	for (var i = 0; i < appScopeVariable.noOfPassengers.get(); i++) {
+		array.push(RNG.uniform());
+	}
+	Template.instance().generatedData = new ReactiveVar(array);
 
 });
