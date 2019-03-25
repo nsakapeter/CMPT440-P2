@@ -38,23 +38,18 @@ Template.Graph.onRendered(function() {
     }
 
 
-    const xValues = math.range(0, appScopeVariable.noOfPassengers.get(), 1).toArray();
+
 
 // Trying to check to see if checkbox for dynamic population is checked
 // if it is checked, we add in the birth and death rate
 // currently not working, but almost there
-
-    const yValues = xValues.map(function (x) {
-
-      x;
-
-    })
+    console.log(dataToVisualize);
+    const yValues = dataToVisualize;
+    const xValues = math.range(0, dataToVisualize.length, 1).toArray();
 
     var trace = {
-      x: xValues,
-      y: yValues,
-      mode: 'line',
-      name: 'Susceptible'
+      x: yValues,
+      type: 'histogram'
     };
 
     var data = [trace];

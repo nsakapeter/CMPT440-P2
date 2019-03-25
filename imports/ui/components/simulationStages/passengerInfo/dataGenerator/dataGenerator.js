@@ -1,4 +1,5 @@
-import * as RNG from 'rng-js';
+const random = require('random');
+
 // var RNG = require('rng-js');
 
 dataToVisualize = [];
@@ -10,7 +11,7 @@ if(Meteor.isClient){
 
 Template.dataGenerator.helpers({
 	dataToVisualize(){
-		return Template.instance().dataToVisualize.get();
+		return Template.instance().generatedData.get();
 	}
 });
 
@@ -26,6 +27,7 @@ Template.dataGenerator.events({
 Template.dataGenerator.onCreated(function() {
 
 	var self = this;
+	this.generatedData = new ReactiveVar([]);
 	// console.log(RNG);
 	// var rng = new RNG('Example');
 
@@ -36,10 +38,11 @@ Template.dataGenerator.onCreated(function() {
 
 Template.dataGenerator.onRendered(function() {
 	alert(appScopeVariable.noOfPassengers.get());
+	const normal = random.exponential(1);
 	var array = [];
-	for (var i = 0; i < appScopeVariable.noOfPassengers.get(); i++) {
-		array.push(RNG.uniform());
+	for (var i = 0; i < 100; i++) {
+		array.push(normal());
 	}
-	Template.instance().generatedData = new ReactiveVar(array);
+	Template.instance().generatedData.set(array);
 
 });
