@@ -2,14 +2,14 @@
   <div class="element-wrapper">
     <div class="element-actions">
       <form class="form-inline justify-content-sm-end">
-        <select class="form-control form-control-sm rounded">
-          <option value="Pending">
+        <select class="form-control form-control-sm rounded distributionTypeDropdown">
+          <option value="uniform">
             Uniform
           </option>
-          <option value="Active">
+          <option value="normal">
             Normal
           </option>
-          <option value="Cancelled">
+          <option value="exponential">
             Exponential
           </option>
         </select>
@@ -18,13 +18,13 @@
     <h6 class="element-header">
       {{title}}
     </h6>
-    <button class="btn btn-primary m-auto visualize" type="submit"> Visualize Distribution</button>
+    <button class="btn btn-primary m-auto btn-small visualize" type="submit"> Visualize Distribution</button>
     <div class="element-box pl-0">
       <table class="table table-lightborder">
         <thead>
           <tr>
             <th>
-              Randomly Generated
+              {{distributionType}} Distribution
             </th>
           </tr>
         </thead>
