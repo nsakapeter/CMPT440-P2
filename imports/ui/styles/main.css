@@ -28986,4 +28986,14 @@ body, body.auth-wrapper .all-wrapper {
     margin: 0 auto;
     pointer-events: all;
 }
+
+#boardingProcess-panel {
+  border: solid red 3px;
+  width: 100px;
+  height: 300px;
+  position: absolute;
+  left: 0;
+  top: 70px;
+}
+
 @import "custom.css";

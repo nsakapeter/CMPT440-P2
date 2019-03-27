@@ -26,7 +26,6 @@ Template.Home.helpers({
 	isCurrentTab: function(tabName){
 		return activeTab.get() === tabName;
 	},
-
 });
 
 Template.Home.events({
