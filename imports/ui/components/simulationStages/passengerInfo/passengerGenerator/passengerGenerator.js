@@ -24,7 +24,7 @@ Template.passengerGenerator.events({
 				serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
 				luggageWeight: luggagesToSimulate.get()[i],
 				walkingSpeed: Math.atan(-agesToSimulate.get()[i] + 75), //algorithm => tan^-1(-x+75)
-				settlingTime: Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3 //algorithm => ln(5^x)+3
+				settlingTime: Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3, //algorithm => ln(5^x)+3
 				// walkingSpeed: 0.1,
 				// settlingTime: 9,
 				seatNo: (parseInt(i/6) + 1) + alphabets[i%6]
