@@ -25,6 +25,9 @@ Template.passengerGenerator.events({
 				luggageWeight: luggagesToSimulate.get()[i],
 				walkingSpeed: Math.atan(-agesToSimulate.get()[i] + 75), //algorithm => tan^-1(-x+75)
 				settlingTime: Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3 //algorithm => ln(5^x)+3
+				// walkingSpeed: 0.1,
+				// settlingTime: 9,
+				seatNo: (parseInt(i/6) + 1) + alphabets[i%6]
 			}
 			// console.log(passenger);
 			passengerList.push(passenger);
@@ -41,8 +44,10 @@ Template.passengerGenerator.events({
 				passengerList.sort(compareAge);
 				break;
 			case "lw":
+				passengerList.sort(compareLuggageWeight);
 				break;
 			case "row":
+				passengerList.sort(compareRow);
 				break;
 			case "zone":
 				break;
@@ -52,13 +57,37 @@ Template.passengerGenerator.events({
 				break;
 		}
 		instance.passengers.set(passengerList);
-	}
+	},
+	// 'change .sortDirectionDropdown'(event, instance) {
+	// 	event.preventDefault();
+	// 	event.stopPropagation();
+	// 	var passengerList = instance.passengers.get(passengerList);
+	// 	switch ($(event.target).val()) {
+	// 		case "age":
+	// 			passengerList.sort(compareAge);
+	// 			break;
+	// 		case "lw":
+	// 			passengerList.sort(compareLuggageWeight);
+	// 			break;
+	// 		case "row":
+	// 			passengerList.sort(compareRow);
+	// 			break;
+	// 		case "zone":
+	// 			break;
+	// 		case "wilma":
+	// 			break;
+	// 		default:
+	// 			break;
+	// 	}
+	// 	instance.sortDirectionDropdown.set(passengerList);
+	// }
 });
 
 Template.passengerGenerator.onCreated(function() {
 
 	var self = this;
 	this.passengers = new ReactiveVar([]);
+	this.sortDirection = new ReactiveVar("asc");
 	this.generatingPassengers = new ReactiveVar(false);
 
 	Tracker.autorun(() => {
@@ -87,12 +116,25 @@ function compareAge(a, b) {
 
 function compareLuggageWeight(a, b) {
   // Use toUpperCase() to ignore character casing
-	const ageA = a.age;
-  const ageB = b.age;
+	const luggageWeightA = a.luggageWeight;
+  const luggageWeightB = b.luggageWeight;
   let comparison = 0;
-  if (ageA > ageB) {
+  if (luggageWeightA > luggageWeightB) {
     comparison = 1;
-  } else if (ageA < ageB) {
+  } else if (luggageWeightA < luggageWeightB) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
+function compareRow(a, b) {
+  // Use toUpperCase() to ignore character casing
+	const seatNoA = a.seatNo;
+  const seatNoB = b.seatNo;
+  let comparison = 0;
+  if (seatNoA > seatNoB) {
+    comparison = 1;
+  } else if (seatNoA < seatNoB) {
     comparison = -1;
   }
   return comparison;
