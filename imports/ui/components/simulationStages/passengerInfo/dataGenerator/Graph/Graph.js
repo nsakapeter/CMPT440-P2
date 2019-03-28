@@ -29,20 +29,13 @@ Template.Graph.onRendered(function() {
   // alert("Hi");
   var self = this;
   var template_instance = Template.instance();
-
-  // template_instance.susceptible_derivative.get();
+  
   setTimeout(function(){
     function sin(x) {
         return Math.sin(x);
-        // return template_instance.susceptible_derivative.get();
+        
     }
 
-
-
-
-// Trying to check to see if checkbox for dynamic population is checked
-// if it is checked, we add in the birth and death rate
-// currently not working, but almost there
     console.log(dataToVisualize);
     const yValues = dataToVisualize;
     const xValues = math.range(0, dataToVisualize.length, 1).toArray();
@@ -50,6 +43,12 @@ Template.Graph.onRendered(function() {
     var trace = {
       x: yValues,
       type: 'histogram'
+      // autobinx: false,
+      // xbins: {
+      //   start: 18,
+      //   size: 5,
+      //   end: 78, 
+      // }
     };
 
     var data = [trace];
@@ -58,12 +57,12 @@ Template.Graph.onRendered(function() {
     var layout = {
       xaxis: {
         title: {
-          text: 'Time(days)'
+          text: 'Age of Passengers'
         },
       },
       yaxis: {
         title: {
-          text: 'Population'
+          text: 'Frequency'
         }
       }
     };

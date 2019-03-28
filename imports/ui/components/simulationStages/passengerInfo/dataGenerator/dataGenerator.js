@@ -52,18 +52,41 @@ Template.dataGenerator.onRendered(function() {
 		console.log("Min is" + this.data.min);
 		console.log("Max is" + this.data.max);
 		var rand;
+
+		//testing to see if i can use max and min
+		// var max = parseInt(this.data.max);
+		// var min = parseInt(this.data.min);
+		// var normalMu = ((max - min) / 2) + min;
+		// var normalSigma = (max - min) / 4;
+		// console.log(max + " " + min);
+
+		//the mu and sigma for normal distribution
+		var normalMu = (parseInt(this.data.max) + parseInt(this.data.min)) / 2;
+		var normalSigma = (parseInt(this.data.max) - parseInt(this.data.min)) / 4;
+
+		//lambda is 1 / the average 
+		//so we can use normalMu b/c normalMu is just the mean of the given max and mim values
+		//do more research on this to confirm that this is what lambda is 
+		var lambda = 1 / normalMu;
+		console.log(lambda);
+
 		switch (Template.instance().distributionType.get()) {
 			case "normal":
-				rand = random.normal(48, 15);
+				//calculating the normal distribution requires the mean and standard deviation
+				rand = random.normal(normalMu, normalSigma); 
 				break;
 			case "uniform":
-				rand = random.uniform(1);
+				//calculating the uniform distribution only requires the minimum and maximum values
+				rand = random.uniform(parseInt(this.data.min), parseInt(this.data.max));
 				break;
 			case "exponential":
-				rand = random.exponential(1);
+				//caclulating the exponential distribution only requires the lambda
+				//need to make changes because we get crazy high numbers which should be expected
+				//but we want to cut these out.
+				rand = random.exponential(lambda);
 				break;
 			default:
-				rand = random.normal(48, 15);
+				rand = random.normal(normalMu, normalSigma);
 				break;
 		}
 		var array = [];
