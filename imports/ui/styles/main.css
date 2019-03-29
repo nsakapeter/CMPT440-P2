@@ -28987,13 +28987,28 @@ body, body.auth-wrapper .all-wrapper {
     pointer-events: all;
 }
 
+#boardingProcess-canvas {
+  margin:0;
+  position:fixed;
+  top:60px;
+  right:0;
+  bottom:0;
+  left:0;
+  background-color: #4e555b;
+}
+
+.centre-text {
+  text-anchor: middle;
+  alignment-baseline: central;
+}
+
 #boardingProcess-panel {
-  border: solid red 3px;
+  border: solid red 1px;
   width: 100px;
   height: 300px;
   position: absolute;
   left: 0;
-  top: 70px;
+  top: 60px;
 }
 
 @import "custom.css";
