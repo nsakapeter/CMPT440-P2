@@ -23,10 +23,10 @@ Template.passengerGenerator.events({
 				age: agesToSimulate.get()[i],
 				serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
 				luggageWeight: luggagesToSimulate.get()[i],
-				walkingSpeed: Math.atan(-agesToSimulate.get()[i] + 75), //algorithm => tan^-1(-x+75)
-				settlingTime: Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3, //algorithm => ln(5^x)+3
-				// walkingSpeed: 0.1,
-				// settlingTime: 9,
+				// walkingSpeed: Math.atan(-agesToSimulate.get()[i] + 75), //algorithm => tan^-1(-x+75)
+				// walkingSpeed: parseInt((-Math.log(Math.pow(2, luggagesToSimulate.get()[i])) + 75)), //algorithm => -ln(2^x) + 75
+				walkingSpeed: parseInt((-Math.log(Math.pow(agesToSimulate.get()[i], 5)) + 30)), //algorithm => -ln(x^5) + 30
+				settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
 				seatNo: (parseInt(i/6) + 1) + alphabets[i%6]
 			}
 			// console.log(passenger);
