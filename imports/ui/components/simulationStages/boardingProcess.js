@@ -1,7 +1,5 @@
 const d3 = require('d3');
 
-var svg;
-
 if(Meteor.isClient){
 
 }
@@ -21,9 +19,8 @@ Template.boardingProcess.onCreated(function() {
 
 Template.boardingProcess.onRendered(function() {
     width = document.body.clientWidth;
-    width = document.body.clientWidth;
 //height = 400;
-    var board_x = document.body.clientWidth/2-(document.body.clientWidth/3)+500;
+    var board_x = document.body.clientWidth/2-(document.body.clientWidth/3);
     var board_y = document.body.clientHeight/2;
     var tickspeed = 1000;
     var max_visible = 5;
@@ -31,6 +28,7 @@ Template.boardingProcess.onRendered(function() {
     var data = ParsePassengerData(rawPassengerData);
     var num_passengers = data.length;
 
+//set up zoom
     zoom_var = 1;
     zoomed = ()=>{
         const {x,y,k} = d3.event.transform
@@ -42,6 +40,7 @@ Template.boardingProcess.onRendered(function() {
         .scaleExtent([1, 8])
         .on("zoom", zoomed);
 
+//set up svg inside div
     var svg = d3.select("#boardingProcess-canvas")
         .append("svg")
         .attr("width", "100%")
@@ -63,41 +62,24 @@ Template.boardingProcess.onRendered(function() {
     zoom.scaleExtent([(width/100)/(num_passengers*2),1]);
     */
 
-// zoom sluggish - fix
 //draw smaller and zoom in
     var scale = Math.floor(width/(num_passengers*1.4));
     zoom.scaleExtent([1, num_passengers/5]);
 
-
-
 //grouping for circles and text
-//var circleGroup = svg.append("g").attr("x",board_x-(scale*max_visible*2)+scale).attr("y",board_y);
     var circleGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
 
-//create circles
-    var circles = circleGroup.selectAll("circle")
-    //.data(data)
-        .data(data.filter(function(d) { return d.visible == 1; }))
-        .enter()
-        .append("circle")
-        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
-        .on("mouseout", function(){d3.select(this).style("fill", "#B8DEE6");});
-
-//create text
-    var text = circleGroup.selectAll("text")
-    //.data(data.filter(function(d) { return d.visible == "1"; }))
-        .data(data)
-        .enter()
-        .append("text");
-
-
-    text.attr("class","centre-text");
 
 //initial update attributes
-    update();
+    var domReady = function(callback) {
+        document.readyState === "interactive" || document.readyState === "complete" ? callback() : document.addEventListener("DOMContentLoaded", callback);
+    };
 
+    domReady(function() {
+        update();
+    });
 
-
+//update2();
 //start port for passengers
     var dock_x = 0;
     var dock_y = 0;
@@ -115,26 +97,40 @@ Template.boardingProcess.onRendered(function() {
     setInterval(function(){countDown()},tickspeed);
 
 
+// --------------------
 
 
-
-
-
-
-
-//
-//update attributes: circles,data,text
     function update() {
-        circles.transition().duration(1000).ease(d3.easeElastic)
+
+//.transition().ease(d3.easeElastic).duration(1000)
+
+        //update circles: select, data, attributes
+        var circles = circleGroup.selectAll("circle")
+            .data(data.filter(function(d) { return parseInt(d.visible) === 1; }))
             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
-            .attr("i",function(d,i) {return i;})
-            .attr("wait_current",function(d){return d.wait_current;})
-            .attr("fill", "#B8DEE6");
+            .attr("wait_current",function(d){return d.wait_current;});
+        //.attr("fill", "#B8DEE6");
 
-        //Add SVG Text Element Attributes
-        text.transition().duration(1000).ease(d3.easeElastic)
+        //object behaviour for when new data is added: enter, append, attributes
+        circles.enter()
+            .append("circle")
+            .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
+            .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
+            .attr("r", scale/2)
+            .attr("wait_current",function(d){return d.wait_current;})
+            .attr("fill", "#B8DEE6")
+            .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+            .on("mouseout", function(){d3.select(this).style("fill", "#B8DEE6");});
+
+        //remove circles that dont have corresponding data (filtered out in update)
+        circles.exit().remove();
+
+        //update text: select, data, attributes
+        var text = circleGroup.selectAll("text")
+            .data(data.filter(function(d) { return parseInt(d.visible) === 1; }))
+            .attr("class","centre-text")
             .attr("x", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("y", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .text(function (d) { return d.wait_current; })
@@ -142,15 +138,22 @@ Template.boardingProcess.onRendered(function() {
             .attr("font-size", scale/2+"px")
             .attr("fill", "red");
 
-        //circles.data(data);
-        circles.data(data.filter(function(d) { return d.visible === 1; }));
-        //text.data(data.filter(function(d) { return d.visible == "1"; }));
-        text.data(data);
+        //text behaviour for when new data is added: enter, append, attributes
+        text.enter()
+            .append("text")
+            .attr("class","centre-text")
+            .attr("x", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
+            .attr("y", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
+            .text(function (d) { return d.wait_current; })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", scale/2+"px")
+            .attr("fill", "red");
+
+        text.exit().remove();
     }
 
 //countdown every game tick: data
     function countDown() {
-
         for(let i=0;i<data.length;i++) {
             var curr_passenger = data[i];
             if(curr_passenger.wait_current>0){
@@ -161,7 +164,9 @@ Template.boardingProcess.onRendered(function() {
                     move(parseInt(curr_passenger.x) + 1, parseInt(curr_passenger.y),i);
                 }
             }
-            if(curr_passenger.x>0) {
+
+            //set to visible once crossed the starting point to be in view
+            if(curr_passenger.x===0){
                 curr_passenger.visible = 1;
             }
         }
@@ -172,7 +177,7 @@ Template.boardingProcess.onRendered(function() {
     function adjacentCheck(i) {
         //if first element (passenger)
         if (i===0) {return false;}
-        //if current object x position equals next object (lower in index) - 1
+        //objects are ordered in position ...5 4 3 2 1 0
         return (data[i].x === (data[i-1].x-1));
     }
 
@@ -198,7 +203,7 @@ Template.boardingProcess.onRendered(function() {
 
 //generate random passenger data
     function samplePassengerData(n){
-        passengerList = [];
+        var passengerList = [];
         for(let i=0;i<n;i++) {
             passengerList.push({
                 age: rando(18, 70),
@@ -215,6 +220,8 @@ Template.boardingProcess.onRendered(function() {
     function ParsePassengerData(passengerDataRaw) {
         var passengerData = passengerDataRaw;
 
+        //set every speed to 1 till objects cross 0,0 so que has no wait time before plane boarding
+
         //traverse from top to bottom
         for(let i=0;i<passengerData.length;i++){
             //passengers are cued from the -x to 0; 0 being the foremost passenger
@@ -222,7 +229,7 @@ Template.boardingProcess.onRendered(function() {
             passengerData[i].y = 0;
             passengerData[i].wait_current = passengerData[i].walkingSpeed*10;
             passengerData[i].wait_reset = passengerData[i].walkingSpeed*10;
-            passengerData[i].visible = 1;
+            passengerData[i].visible = 0;
         }
         return passengerData;
     }
