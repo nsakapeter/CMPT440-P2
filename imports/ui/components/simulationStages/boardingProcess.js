@@ -19,13 +19,14 @@ Template.boardingProcess.onCreated(function() {
 
 Template.boardingProcess.onRendered(function() {
     width = document.body.clientWidth;
-//height = 400;
     var board_x = Math.round(document.body.clientWidth/2-(document.body.clientWidth/3)+100);
     var board_y = Math.round(document.body.clientHeight/2);
-    var tickspeed = 1000;
-    var rawPassengerData = samplePassengerData(10);
+    var tickspeed = 20;
+    var rawPassengerData = samplePassengerData(100);
     var data = ParsePassengerData(rawPassengerData);
     var num_passengers = data.length;
+
+    var plane_length = num_passengers; //how many passengers can fit in the isle in one row
 
 //set up zoom
     zoom_var = 1;
@@ -77,19 +78,33 @@ Template.boardingProcess.onRendered(function() {
     domReady(function() {
         //initial update attributes to draw objects to screen
         update();
-        //console.log(data);
         //set tick speed
         setInterval(function(){countDown()},tickspeed);
     });
 
+
+//Passenger Docks
+    var dock_scale = scale/4;
+
 //start port for passengers
     var dock_x = 0;
     var dock_y = 0;
-    var dock_scale = scale/6;
     var passengerDock = svg.append("g")
         .append("rect")
-        .attr("x", (dock_x * dock_scale) + board_x - ((dock_scale/2)) )
-        .attr("y", (-dock_y * dock_scale)+ board_y - ((dock_scale/2)) )
+        .attr("x", (dock_x * scale) + board_x - ((dock_scale/2)) )
+        .attr("y", (-dock_y * scale)+ board_y - ((dock_scale/2)) )
+        .attr("width", dock_scale)
+        .attr("height", dock_scale)
+        .style("fill", "#ffc205")
+
+
+//end port for passengers:
+    var dock2_x = num_passengers;
+    var dock2_y = 0;
+    var passengerDock2 = svg.append("g")
+        .append("rect")
+        .attr("x", (dock2_x * scale) + board_x - ((dock_scale/2)) )
+        .attr("y", (-dock2_y * scale)+ board_y - ((dock_scale/2)) )
         .attr("width", dock_scale)
         .attr("height", dock_scale)
         .style("fill", "#ffc205")
@@ -212,7 +227,6 @@ Template.boardingProcess.onRendered(function() {
                 curr_passenger.wait_reset = curr_passenger.walkingSpeed*10;
             }
 
-
             //Before move
 
 
@@ -227,12 +241,16 @@ Template.boardingProcess.onRendered(function() {
             }
 
 
-            //After move
+            //After move: set for next iteration
 
 
             //if in front of dock at positon (1,0) after move, set visible
             if (curr_passenger.x===1) {
                 curr_passenger.visible = 1;
+            }
+            //if passenger reached the end of the plane
+            else if (curr_passenger.x===plane_length){
+                curr_passenger.visible = 0;
             }
         }
         update();
