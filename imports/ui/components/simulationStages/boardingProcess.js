@@ -79,7 +79,7 @@ Template.boardingProcess.onRendered(function() {
         update();
         //console.log(data);
         //set tick speed
-        //setInterval(function(){countDown()},tickspeed);
+        setInterval(function(){countDown()},tickspeed);
     });
 
 //start port for passengers
