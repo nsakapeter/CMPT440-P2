@@ -1,6 +1,18 @@
 <template name="boardingProcess">
     <body>
-        <div id="boardingProcess-canvas"></div>
-        <div id="boardingProcess-panel"></div>
+    <div id="boardingProcess-canvas">
+        <div id="boardingProcess-panel">
+            <form id="panel-form" onclick="return false;">
+                <button id="pause-play-btn">></button>
+                <button id="skip-btn">>|</button>
+                <button id="reset-btn">reset</button>
+                <button id="speed-btn">speed</button>
+                <button id="passenger_text-btn">toggle passenger text</button>
+                <button id="temp-pause-play-btn">click to begin simulation</button>
+            </form>
+            <div id="conflicts-btn">total conflicts: <span id="conflicts-btn-value">0</span></div>
+            <div id="time-btn">time elapsed: <span id="time-btn-value">0</span></div>
+        </div>
+    </div>
     </body>
 </template>

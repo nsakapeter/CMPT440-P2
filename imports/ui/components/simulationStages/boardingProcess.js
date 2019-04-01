@@ -25,8 +25,30 @@ Template.boardingProcess.onRendered(function() {
     var rawPassengerData = samplePassengerData(100);
     var data = ParsePassengerData(rawPassengerData);
     var num_passengers = data.length;
+    var plane_length = num_passengers; //how long the plane isle is (how many passengers long)
+    var countdown;
+    var panel_play = true;
 
-    var plane_length = num_passengers; //how many passengers can fit in the isle in one row
+    /*TODO:
+
+    next:
+    game stop on 0 data; stop function call
+    design chairs and put on grid dynamically - each game length spawns 6 chairs
+    settling time stall
+    exit on seat number match
+    conflict on deeper seated
+
+    gamepanel:
+    reset button
+
+    extra:
+    animations - may not need since fast game tick
+    on mouseover to show passenger data
+    color on settling
+    color on conflict
+    color on settled
+    */
+
 
 //set up zoom
     zoom_var = 1;
@@ -56,17 +78,18 @@ Template.boardingProcess.onRendered(function() {
         .attr("width", "100%")
         .attr("height", "100%");
 
-
-//draw the same and zoom out
+//draw the same and zoom out : way 1 of 2
     var scale = 80;
     zoom.scaleExtent([(width/100)/(num_passengers*2),1]);
 
-
     /*
-    //draw smaller and zoom in
+    //draw smaller and zoom in : way 2 of 2
     var scale = Math.floor(width/(num_passengers*1.4));
     zoom.scaleExtent([1, num_passengers/5]);
     */
+
+
+
 //grouping for circles and text
     var circleGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
 
@@ -76,10 +99,94 @@ Template.boardingProcess.onRendered(function() {
     };
 
     domReady(function() {
+        //Panel Bindings
+
+        //skip button
+        d3.select("#skip-btn").on("click", function(e){
+            countDown();
+        });
+
+        //play/pause button
+        d3.select("#pause-play-btn").on("click", function(e){
+            if(!panel_play) {
+                this.innerHTML = ">";
+                clearInterval(countdown);
+            } else {
+                showTempPlayButton(0);
+                this.innerHTML = "=";
+                countdown = setInterval(function(){countDown()},tickspeed);
+            }
+            panel_play = !panel_play;
+        });
+
+        //speed button
+        d3.select("#speed-btn").on("click", function(e){
+            tickspeed = 1000;
+            clearInterval(countdown);
+            if(!panel_play) {
+                countdown = setInterval(function(){countDown()},tickspeed);
+            }
+        });
+
+        //passenger text toggle
+        d3.select("#passenger_text-btn").on("click", function(e) {
+            if(parseInt(data[0].visible_text) === 0) {
+                data.forEach(function(d) {
+                    d.visible_text = 1;
+                });
+
+            } else {
+                data.forEach(function(d) {
+                    d.visible_text = 0;
+                });
+            }
+            update();
+        });
+
+        //temp play button
+        d3.select("#temp-pause-play-btn")
+            .style("position","fixed")
+            .style("left",(document.body.clientWidth/2)+"px")
+            .style("top",(document.body.clientHeight/2)+"px")
+            .on("click", function(e){
+                d3.select("#pause-play-btn").html("=");
+                panel_play = false;
+                countdown = setInterval(function(){countDown()},tickspeed);
+                d3.select(this).style("display","none");
+            });
+
+        function showTempPlayButton(toggle) {
+            if (toggle === 1) {
+                d3.select("#temp-pause-play-btn").style("display", "initial");
+            } else {
+                d3.select("#temp-pause-play-btn").style("display", "none");
+            }
+        }
+
+        //reset button; reparse data and reset panel values
+        d3.select("#reset-btn").on("click", function(e) {
+            //reparse passenger data
+            data = ParsePassengerData(rawPassengerData);
+
+            //update panel
+            d3.select("#time-btn-value").html(0);
+            d3.select("#conflicts-btn-value").html(0);
+
+            //play/pause button update
+            panel_play = true;
+            d3.select("#pause-play-btn").html(">");
+
+            clearInterval(countdown);
+
+            //display temp play buttom
+            showTempPlayButton(1);
+
+            update();
+        });
+
         //initial update attributes to draw objects to screen
         update();
-        //set tick speed
-        setInterval(function(){countDown()},tickspeed);
+
     });
 
 
@@ -95,7 +202,7 @@ Template.boardingProcess.onRendered(function() {
         .attr("y", (-dock_y * scale)+ board_y - ((dock_scale/2)) )
         .attr("width", dock_scale)
         .attr("height", dock_scale)
-        .style("fill", "#ffc205")
+        .style("fill", "#ffc205");
 
 
 //end port for passengers:
@@ -107,7 +214,7 @@ Template.boardingProcess.onRendered(function() {
         .attr("y", (-dock2_y * scale)+ board_y - ((dock_scale/2)) )
         .attr("width", dock_scale)
         .attr("height", dock_scale)
-        .style("fill", "#ffc205")
+        .style("fill", "#ffc205");
 
 
 
@@ -138,21 +245,21 @@ Template.boardingProcess.onRendered(function() {
 // -------------------- Functions
 
 
+
+
+//update objects: data
     function update() {
-//.transition().ease(d3.easeBounce).duration(1000)
-
-        //update circles: select, data, attributes
-
+        //.transition().ease(d3.easeBounce).duration(1000)
         /* circleGroup.selectAll("circle").transition().duration(1000).ease(d3.easeElastic)
              .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"))-1;})*/
 
+        //update circles: select, data, attributes
         var circles = circleGroup.selectAll("circle")
             .data(data.filter(function(d) { return parseInt(d.visible) === 1; }))
             .attr("cx", function(d){return ((d.x * scale) + parseInt(circleGroup.attr("x")) );})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
             .attr("wait_current",function(d){return d.wait_current;});
-        //.attr("fill", "#B8DEE6");
 
         //object behaviour for when new data is added: enter, append, attributes
         circles.enter()
@@ -172,7 +279,7 @@ Template.boardingProcess.onRendered(function() {
 
         //update text: select, data, attributes
         var text = circleGroup.selectAll("text")
-            .data(data.filter(function(d) { return parseInt(d.visible) === 1; }))
+            .data(data.filter(function(d) { return ((parseInt(d.visible) === 1) && (parseInt(d.visible_text) === 1)); }))
             .attr("class","centre-text")
             .attr("x", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("y", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
@@ -194,31 +301,13 @@ Template.boardingProcess.onRendered(function() {
 
         //exit behaviour: remove text
         text.exit().remove();
-
-
-        /*
-        //Temporary workaround
-        //cx value in contant flux at the 5+ decimal range due the transition
-        var tremor_scale = 1;
-        circles.transition().duration(1000).ease(d3.easeElastic)
-            .attr("cx", function(d){return Math.round(parseInt(d3.select(this).attr("cx")))+tremor_scale})
-            .duration(1000)
-            .transition()
-            .attr("cx", function(d){return Math.round(parseInt(d3.select(this).attr("cx")))})
-            .transition();
-
-        text.transition().duration(1000).ease(d3.easeElastic)
-            .attr("x", function(d){return parseInt(d3.select(this).attr("x"))+tremor_scale})
-            .duration(1000)
-            .transition()
-            .attr("x", function(d){return Math.round(parseInt(d3.select(this).attr("x")))})
-            .transition();
-
-         */
     }
 
 //actions every game tick: data
     function countDown() {
+        //set countdown to ++
+        d3.select("#time-btn-value").html(parseInt(d3.select("#time-btn-value").html())+1);
+
         for(let i=0;i<data.length;i++) {
             var curr_passenger = data[i];
 
@@ -312,6 +401,7 @@ Template.boardingProcess.onRendered(function() {
             passengerData[i].wait_current = 0;
             passengerData[i].wait_reset = 0;
             passengerData[i].visible = 0;
+            passengerData[i].visible_text = 1;
         }
         return passengerData;
     }
