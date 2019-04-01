@@ -103,6 +103,7 @@ Template.boardingProcess.onRendered(function() {
 
         //skip button
         d3.select("#skip-btn").on("click", function(e){
+            showTempPlayButton(0);
             countDown();
         });
 
@@ -155,14 +156,6 @@ Template.boardingProcess.onRendered(function() {
                 d3.select(this).style("display","none");
             });
 
-        function showTempPlayButton(toggle) {
-            if (toggle === 1) {
-                d3.select("#temp-pause-play-btn").style("display", "initial");
-            } else {
-                d3.select("#temp-pause-play-btn").style("display", "none");
-            }
-        }
-
         //reset button; reparse data and reset panel values
         d3.select("#reset-btn").on("click", function(e) {
             //reparse passenger data
@@ -176,6 +169,7 @@ Template.boardingProcess.onRendered(function() {
             panel_play = true;
             d3.select("#pause-play-btn").html(">");
 
+			tickspeed = 20;
             clearInterval(countdown);
 
             //display temp play buttom
@@ -244,6 +238,14 @@ Template.boardingProcess.onRendered(function() {
 
 // -------------------- Functions
 
+
+    function showTempPlayButton(toggle) {
+        if (toggle === 1) {
+            d3.select("#temp-pause-play-btn").style("display", "initial");
+        } else {
+            d3.select("#temp-pause-play-btn").style("display", "none");
+        }
+    }
 
 
 
