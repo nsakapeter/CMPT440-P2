@@ -38,7 +38,13 @@ Template.passengerGenerator.events({
 					luggageWeight: luggagesToSimulate.get()[i],
 					walkingSpeed: 5, 
 					settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
-					seatNo: (parseInt(i/6) + 1) + alphabets[i%6]
+					// seatNo: (parseInt(i/6) + 1 ) < 10 ? "0" : "" + (parseInt(i/6) + 1) + alphabets[i%6]
+			}
+			if ((parseInt(i/6) + 1 ) < 10 ) {
+				passenger.seatNo = "0" + (parseInt(i/6) + 1) + alphabets[i%6];
+			}
+			else{
+				passenger.seatNo = (parseInt(i/6) + 1) + alphabets[i%6];
 			}
 			if(agesToSimulate.get()[i] > 17 && agesToSimulate.get()[i] < 30) //speed for age range from 18 to 29
 			{
