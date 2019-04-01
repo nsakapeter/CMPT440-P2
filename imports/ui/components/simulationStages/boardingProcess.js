@@ -156,14 +156,6 @@ Template.boardingProcess.onRendered(function() {
                 d3.select(this).style("display","none");
             });
 
-        function showTempPlayButton(toggle) {
-            if (toggle === 1) {
-                d3.select("#temp-pause-play-btn").style("display", "initial");
-            } else {
-                d3.select("#temp-pause-play-btn").style("display", "none");
-            }
-        }
-
         //reset button; reparse data and reset panel values
         d3.select("#reset-btn").on("click", function(e) {
             //reparse passenger data
@@ -246,6 +238,14 @@ Template.boardingProcess.onRendered(function() {
 
 // -------------------- Functions
 
+
+    function showTempPlayButton(toggle) {
+        if (toggle === 1) {
+            d3.select("#temp-pause-play-btn").style("display", "initial");
+        } else {
+            d3.select("#temp-pause-play-btn").style("display", "none");
+        }
+    }
 
 
 
