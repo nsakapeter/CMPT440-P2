@@ -103,6 +103,7 @@ Template.boardingProcess.onRendered(function() {
 
         //skip button
         d3.select("#skip-btn").on("click", function(e){
+            showTempPlayButton(0);
             countDown();
         });
 
