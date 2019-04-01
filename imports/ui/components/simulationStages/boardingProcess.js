@@ -176,6 +176,7 @@ Template.boardingProcess.onRendered(function() {
             panel_play = true;
             d3.select("#pause-play-btn").html(">");
 
+			tickspeed = 20;
             clearInterval(countdown);
 
             //display temp play buttom
