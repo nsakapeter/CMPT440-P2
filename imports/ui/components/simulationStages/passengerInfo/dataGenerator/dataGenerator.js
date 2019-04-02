@@ -72,8 +72,9 @@ Template.dataGenerator.onRendered(function() {
 
 		switch (Template.instance().distributionType.get()) {
 			case "normal":
-				//calculating the normal distribution requires the mean and standard deviation
-				rand = random.normal(normalMu, normalSigma); 
+				//calculating the normal distribution requires the mean and standard deviation 
+				// rand = random.normal(normalMu, normalSigma);
+				rand = random.normal(normalMu, normalSigma);
 				break;
 			case "uniform":
 				//calculating the uniform distribution only requires the minimum and maximum values
@@ -91,7 +92,23 @@ Template.dataGenerator.onRendered(function() {
 		}
 		var array = [];
 		for (var i = 0; i < 100; i++) {
-			array.push(Math.round(rand()));
+			var newValue = rand();
+			console.log("Original value " + newValue);
+			if (self.data.title == "Ages") {
+				while((newValue < 18) || (newValue > 78)){
+					newValue = rand();
+					console.log("Newly generated" + newValue);
+				}
+				array.push(Math.round(newValue));
+			}
+			else{
+				while((newValue < 1) || (newValue > 15)){
+					newValue = rand();
+					console.log("Newly generated" + newValue);
+				}
+				array.push(Math.round(newValue));
+			}
+			
 		}
 		if (self.data.title == "Ages") {
 			agesToSimulate.set(array);
