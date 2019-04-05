@@ -36,22 +36,46 @@ Template.Graph.onRendered(function() {
         
     }
 
-    console.log(dataToVisualize);
+    console.log("Data to visualize: " + dataToVisualize);
     const yValues = dataToVisualize;
     const xValues = math.range(0, dataToVisualize.length, 1).toArray();
 
+    console.log(dataToVisualize[0]);
+
+    // starting and end points for age
     var trace = {
       x: yValues,
-      type: 'histogram'
+      type: 'histogram',
       // autobinx: false,
-      // xbins: {
-      //   start: 18,
-      //   size: 5,
-      //   end: 78, 
-      // }
+      xbins: {
+        start: 18,
+        // size: 5,
+        end: 78 
+      }
     };
 
-    var data = [trace];
+    // starting and end points for luggage weight
+    var trace2 = {
+      x: yValues,
+      type: 'histogram',
+      // autobinx: false,
+      xbins: {
+        start: 1,
+        // size: 5,
+        end: 15 
+      }
+    };
+
+    //if one of data points is out of luggage weight range, must be age
+    //figure out better way to differentiate age and luggage weight
+     if(dataToVisualize[0] > 17)
+     {
+        var data = [trace];
+     } else
+     {
+        var data = [trace2];
+     }
+    
 
     // adding x and y axis titles
     var layout = {
