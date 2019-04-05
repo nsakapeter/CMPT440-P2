@@ -99,7 +99,23 @@ Template.dataGenerator.onRendered(function() {
 		// var numPassengers = self.data.passengers;
 		var array = [];
 		for (var i = 0; i < appScopeVariable.noOfPassengers.get(); i++) {
-			array.push(Math.round(rand()));
+			var newValue = rand();
+			if (self.data.title == "Ages")
+			{
+				while((newValue < 18) || (newValue > 78))
+				{
+					newValue = rand();
+				}
+				array.push(Math.round(newValue));
+			}
+			else {
+				while((newValue < 1) || (newValue > 15))
+				{
+					newValue = rand();
+				}
+				array.push(Math.round(newValue));
+			}
+
 		}
 		if (self.data.title == "Ages") {
 			agesToSimulate.set(array);
