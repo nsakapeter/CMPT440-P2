@@ -64,16 +64,16 @@ Template.dataGenerator.onRendered(function() {
 		var normalMu = (parseInt(this.data.max) + parseInt(this.data.min)) / 2;
 		var normalSigma = (parseInt(this.data.max) - parseInt(this.data.min)) / 4;
 
-		//lambda is 1 / the average 
+		//lambda is 1 / the average
 		//so we can use normalMu b/c normalMu is just the mean of the given max and mim values
-		//do more research on this to confirm that this is what lambda is 
+		//do more research on this to confirm that this is what lambda is
 		var lambda = 1 / normalMu;
 		console.log(lambda);
 
 		switch (Template.instance().distributionType.get()) {
 			case "normal":
 				//calculating the normal distribution requires the mean and standard deviation
-				rand = random.normal(normalMu, normalSigma); 
+				rand = random.normal(normalMu, normalSigma);
 				break;
 			case "uniform":
 				//calculating the uniform distribution only requires the minimum and maximum values
@@ -90,7 +90,7 @@ Template.dataGenerator.onRendered(function() {
 				break;
 		}
 		var array = [];
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < appScopeVariable.noOfPassengers.get(); i++) {
 			array.push(Math.round(rand()));
 		}
 		if (self.data.title == "Ages") {
