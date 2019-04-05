@@ -21,50 +21,81 @@ Template.passengerGenerator.events({
 		var passengerList =[];
 
 		//we want to create a normal distribution for walking speed
-		//everyone from 18 to 45 will have the same dsitribution for walking speed
-		//after that not sure
-		var maxSpeed = 20; //max speed for 18 to 55, randomly picked but we can make it more real life
-		var minSpeed = 10; //min speed for 18 to 55, randomly picked but we can make it more real life
-
-		var speedMu = (parseInt(maxSpeed) + parseInt(minSpeed)) / 2;
-		var speedSigma = (parseInt(maxSpeed) - parseInt(minSpeed)) / 4;
-
-		console.log(speedMu + " " + speedSigma);
-
-		const normal = random.normal(speedMu, speedSigma);
-		console.log(normal());
-
-		//what the code aboves is generates a normal distribution of speed from 30 to 10
-		//can do something like if age is between 18 to 55, generate a random speed from this distribution
-		//not sure what to do for older people
+		//we got the formulas for average walking speed between certain ages from this website
+		//https://www.healthline.com/health/exercise-fitness/average-walking-speed#Average-walking-speed-by-age-
+		//using these walking speeds, we change the speed based on age
+		//we create the mu for normal distribution from (max+min)/2
+		//and we create the sigma from (max-min)/4
+		//we can use these formulas because we are given the max and min speed for a range of ages
+		//our speed is in METRES PER SECOND, MILES PER HOUR is another option if needed
+		
+		
 
 		for (var i = 0; i < agesToSimulate.get().length; i++) {
-			//if age is between 18 to 55, use this distribution for walking speed
-			if(agesToSimulate.get()[i] > 17  && agesToSimulate.get()[i] < 56)
-			{
-				var passenger = {
+			var passenger = {
 					age: agesToSimulate.get()[i],
 					serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
 					luggageWeight: luggagesToSimulate.get()[i],
-					walkingSpeed: parseInt(normal()), 
+					walkingSpeed: 5, 
 					settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
-					seatNo: (parseInt(i/6) + 1) + alphabets[i%6]
-				}
-			} else
-			{
-				//if age is > 55, use a different distribution
-				var passenger = {
-					age: agesToSimulate.get()[i],
-					serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
-					luggageWeight: luggagesToSimulate.get()[i],
-					// walkingSpeed: Math.atan(-agesToSimulate.get()[i] + 75), //algorithm => tan^-1(-x+75)
-					// walkingSpeed: parseInt((-Math.log(Math.pow(2, luggagesToSimulate.get()[i])) + 75)), //algorithm => -ln(2^x) + 75
-					walkingSpeed: parseInt((-Math.log(Math.pow(agesToSimulate.get()[i], 5)) + 30)), //algorithm => -ln(x^5) + 30
-					settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
-					seatNo: (parseInt(i/6) + 1) + alphabets[i%6]
-				}
+					// seatNo: (parseInt(i/6) + 1 ) < 10 ? "0" : "" + (parseInt(i/6) + 1) + alphabets[i%6]
 			}
-			
+			if ((parseInt(i/6) + 1 ) < 10 ) {
+				passenger.seatNo = "0" + (parseInt(i/6) + 1) + alphabets[i%6];
+			}
+			else{
+				passenger.seatNo = (parseInt(i/6) + 1) + alphabets[i%6];
+			}
+			if(agesToSimulate.get()[i] > 17 && agesToSimulate.get()[i] < 30) //speed for age range from 18 to 29
+			{
+				var maxSpeed = 1.36;
+				var minSpeed = 1.34;
+				var speedMu = (maxSpeed + minSpeed) / 2;
+				var speedSigma = (maxSpeed - minSpeed) / 4;
+				const normal = random.normal(speedMu, speedSigma);
+				passenger.walkingSpeed = parseFloat(Math.round(normal() * 100) / 100).toFixed(2); // rounding our walking speed to 2 decimals
+			} else if(agesToSimulate.get()[i] > 29 && agesToSimulate.get()[i] < 40) //speed for age range from 30 to 39
+			{
+				var maxSpeed = 1.36;
+				var minSpeed = 1.43;
+				var speedMu = (maxSpeed + minSpeed) / 2;
+				var speedSigma = (maxSpeed - minSpeed) / 4;
+				const normal = random.normal(speedMu, speedSigma);
+				passenger.walkingSpeed = parseFloat(Math.round(normal() * 100) / 100).toFixed(2);
+			} else if(agesToSimulate.get()[i] > 39 && agesToSimulate.get()[i] < 50) //speed for age range from 40 to 49
+			{
+				var maxSpeed = 1.39;
+				var minSpeed = 1.43;
+				var speedMu = (maxSpeed + minSpeed) / 2;
+				var speedSigma = (maxSpeed - minSpeed) / 4;
+				const normal = random.normal(speedMu, speedSigma);
+				passenger.walkingSpeed = parseFloat(Math.round(normal() * 100) / 100).toFixed(2);
+			} else if(agesToSimulate.get()[i] > 49 && agesToSimulate.get()[i] < 60) //speed for age range from 50 to 59
+			{
+				maxSpeed = 1.31;
+				var minSpeed = 1.43;
+				var speedMu = (maxSpeed + minSpeed) / 2;
+				var speedSigma = (maxSpeed - minSpeed) / 4;
+				const normal = random.normal(speedMu, speedSigma);
+				passenger.walkingSpeed = parseFloat(Math.round(normal() * 100) / 100).toFixed(2);
+			} else if(agesToSimulate.get()[i] > 59 && agesToSimulate.get()[i] < 70) //speed for age range from 60 to 69
+			{
+				maxSpeed = 1.24;
+				var minSpeed = 1.34;
+				var speedMu = (maxSpeed + minSpeed) / 2;
+				var speedSigma = (maxSpeed - minSpeed) / 4;
+				const normal = random.normal(speedMu, speedSigma);
+				passenger.walkingSpeed = parseFloat(Math.round(normal() * 100) / 100).toFixed(2);
+			} else if(agesToSimulate.get()[i] > 69 && agesToSimulate.get()[i] < 80) //speed for age range from 70 to 79
+			{
+				maxSpeed = 1.13;
+				var minSpeed = 1.26;
+				var speedMu = (maxSpeed + minSpeed) / 2;
+				var speedSigma = (maxSpeed - minSpeed) / 4;
+				const normal = random.normal(speedMu, speedSigma);
+				passenger.walkingSpeed = parseFloat(Math.round(normal() * 100) / 100).toFixed(2);
+			}
+
 			// console.log(passenger);
 			passengerList.push(passenger);
 		}

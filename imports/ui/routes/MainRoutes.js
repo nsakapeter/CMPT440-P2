@@ -1,7 +1,7 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 
 FlowRouter.route('/', {
-  title: 'SIR Model Siimualtion',
+  title: 'Plane Boarding Simulation',
   action() {
     this.render('mainLayout', 'Home')
   },

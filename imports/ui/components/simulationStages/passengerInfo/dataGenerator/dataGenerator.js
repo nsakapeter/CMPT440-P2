@@ -1,3 +1,5 @@
+import { Template } from 'meteor/templating'
+
 const random = require('random');
 
 // var RNG = require('rng-js');
@@ -37,6 +39,9 @@ Template.dataGenerator.onCreated(function() {
 	var self = this;
 	this.generatedData = new ReactiveVar([]);
 	this.distributionType = new ReactiveVar("uniform");
+	var context_data = this.data;
+
+	//self.numPassengers = new ReactiveVar(parseInt(context_data.passengers));
 	// console.log(RNG);
 	// var rng = new RNG('Example');
 
@@ -52,6 +57,8 @@ Template.dataGenerator.onRendered(function() {
 		console.log("Min is" + this.data.min);
 		console.log("Max is" + this.data.max);
 		var rand;
+		//var template_instance = Template.instance();
+		//console.log(template_instance.numPassengers.get());
 
 		//testing to see if i can use max and min
 		// var max = parseInt(this.data.max);
@@ -89,6 +96,7 @@ Template.dataGenerator.onRendered(function() {
 				rand = random.normal(normalMu, normalSigma);
 				break;
 		}
+		// var numPassengers = self.data.passengers;
 		var array = [];
 		for (var i = 0; i < appScopeVariable.noOfPassengers.get(); i++) {
 			array.push(Math.round(rand()));
