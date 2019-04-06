@@ -6,9 +6,9 @@
         <form>
           <div class="steps-w">
             <div class="step-triggers">
-              <a class="step-trigger {{#if isCurrentTab 'capacityForm'}}active{{/if}}">Capacity Info</a>
-              <a class="step-trigger {{#if isCurrentTab 'passengerInfo'}}active{{/if}}">Passenger Info</a>
-              <a class="step-trigger {{#if isCurrentTab 'boardingProcess'}}active{{/if}}">Boarding Process</a>
+              <a class="step-trigger {{#if isCurrentTab 'capacityForm'}}active{{/if}}" data-name="capacityForm">Capacity Info</a>
+              <a class="step-trigger {{#if isCurrentTab 'passengerInfo'}}active{{/if}}" data-name="{{#if hasCapacityInfo}}passengerInfo{{/if}}">Passenger Info</a>
+              <a class="step-trigger {{#if isCurrentTab 'boardingProcess'}}active{{/if}}"  data-name="{{#if hasPassengers}}boardingProcess{{/if}}">Boarding Process</a>
             </div>
             <div class="step-contents" style="">
               {{#if isCurrentTab 'capacityForm'}}

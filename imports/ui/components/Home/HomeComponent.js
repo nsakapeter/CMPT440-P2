@@ -26,6 +26,12 @@ Template.Home.helpers({
 	isCurrentTab: function(tabName){
 		return activeTab.get() === tabName;
 	},
+	hasPassengers(){
+		return appScopeVariable.passengers.get();
+	},
+	hasCapacityInfo(){
+		return appScopeVariable.noOfPassengers.get() && appScopeVariable.planeCapacity.get();
+	},
 });
 
 Template.Home.events({
