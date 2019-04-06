@@ -110,16 +110,21 @@ Template.passengerGenerator.events({
 		switch ($(event.target).val()) {
 			case "age":
 				passengerList.sort(compareAge);
+				appScopeVariable.currentlySimulatedProcess.set("By Age " + $(".sortDirectionDropdown").val()); 
 				break;
 			case "lw":
 				passengerList.sort(compareLuggageWeight);
+				appScopeVariable.currentlySimulatedProcess.set("By Luggae Weight " + $(".sortDirectionDropdown").val());
 				break;
 			case "row":
 				passengerList.sort(compareRow);
+				appScopeVariable.currentlySimulatedProcess.set("By row " + $(".sortDirectionDropdown").val());
 				break;
 			case "zone":
+			appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
 				break;
 			case "wilma":
+			appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
 				break;
 			default:
 				break;

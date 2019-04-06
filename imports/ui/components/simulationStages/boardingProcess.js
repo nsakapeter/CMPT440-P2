@@ -7,11 +7,17 @@ if(Meteor.isClient){
 
 
 Template.boardingProcess.helpers({
-
+	hasResults(){
+		return appScopeVariable.results.get();
+	}
 });
 
 Template.boardingProcess.events({
-
+	// 'click #save-result'(event, instance) {
+  //   // event.preventDefault();
+  //   // event.stopPropagation();
+	//
+  // }
 });
 
 Template.boardingProcess.onCreated(function() {
@@ -161,6 +167,7 @@ Template.boardingProcess.onRendered(function() {
 								simulationBegan.set(true);
             });
 
+
         //reset button; reparse data and reset panel values
         d3.select("#reset-btn").on("click", function(e) {
             //reparse passenger data
@@ -185,6 +192,25 @@ Template.boardingProcess.onRendered(function() {
 
         //initial update attributes to draw objects to screen
         update();
+
+				d3.select("#save-result")
+           .on("click", function(e){
+						   var alreadySavedResults = appScopeVariable.results.get();
+							 alreadySavedResults.push({
+								 "name": appScopeVariable.currentlySimulatedProcess.get(),
+								 "boardingTime": d3.select("#hidden-time-btn-value").html(),
+								 "conflicts": d3.select("#conflicts-btn-value").html()
+							 });
+							 appScopeVariable.results.set(alreadySavedResults);
+							 Bert.alert({
+							  title: 'Saved',
+							  message: 'Results successfully saved',
+							  type: 'success',
+							  style: 'growl-bottom-right',
+							  icon: 'fas fa-music'
+							});
+							console.log(appScopeVariable.results.get());
+           });
 
     });
 
@@ -377,6 +403,7 @@ Template.boardingProcess.onRendered(function() {
         //set countdown to ++
 
         d3.select("#hidden-time-btn-value").html(parseInt(d3.select("#hidden-time-btn-value").html())+1);
+				//convert time to mins and seconds
 				var currentTime = parseInt(d3.select("#hidden-time-btn-value").html());
 				var newTime = Math.floor(currentTime / 60) + ":" + (currentTime - (Math.floor(currentTime / 60) * 60))
         d3.select("#time-btn-value").html(newTime);

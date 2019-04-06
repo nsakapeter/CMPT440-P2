@@ -5,19 +5,23 @@
           <div class="element-box">
               <div class="element-box-content">
                 <div class="row">
-                  <div class="col-md-3 d-flex align-items-center justify-content-center"  style="">
+                  <div class="col-md-2 d-flex align-items-center justify-content-center"  style="">
                     <div id="conflicts-btn">Total Conflicts: <span id="conflicts-btn-value">0</span></div>
                   </div>
-                  <div class="col-md-3 d-flex align-items-center justify-content-center"  style="">
+                  <div class="col-md-2 d-flex align-items-center justify-content-center"  style="">
                     <div id="time-btn">Time Elapsed: <span id="time-btn-value">0</span><span style="opacity: 0" id="hidden-time-btn-value">0</span></div>
                   </div>
-                  <div class="col-md-6 d-flex align-items-center justify-content-center"  style="">
+                  <div class="col-md-8 d-flex align-items-center justify-content-center"  style="">
                     <!-- {{#if simulationBegan}} -->
                     <button class="mr-2 mb-2 btn btn-primary" type="button" id="pause-play-btn"> Play</button>
                     <button class="mr-2 mb-2 btn btn-secondary" type="button" id="skip-btn"> Skip</button>
                     <button class="mr-2 mb-2 btn btn-success" type="button" id="reset-btn"> Reset</button>
                     <button class="mr-2 mb-2 btn btn-info" type="button" id="speed-btn"> Speed</button>
                     <button class="mr-2 mb-2 btn btn-warning" type="button" id="passenger_text-btn"> Toggle Passenger #</button>
+                    <button class="mr-2 mb-2 btn btn-warning" type="button" id="save-result"> Save Result</button>
+                    {{#if hasResults}}
+                      <button class="mr-2 mb-2 btn btn-warning step-trigger" data-name="compareResults" type="button"> Compare Results</button>
+                    {{/if}}
                     <!-- {{else}}
                       <button class="mr-2 mb-2 btn btn-primary" type="button" id="temp-pause-play-btn"> Begin Simulation</button>
                     {{/if}} -->

@@ -1,0 +1,56 @@
+<template name="compareResults">
+  <div class="row h-100 d-flex flex-row align-items-center" >
+    <div class="col-md-4">
+      <div class="element-wrapper">
+        <h6 class="element-header">
+          Compare Boarding Methods
+        </h6>
+        <!-- <button class="btn btn-primary m-auto btn-small generateGraphs" type="submit"> Generate Graph</button> -->
+        <div class="element-box pl-0">
+          <table class="table table-lightborder">
+            <thead>
+              <tr>
+                <th>
+                  Boarding Method
+                </th>
+                <th>
+                  Boarding Time
+                </th>
+                <th>
+                  # Of Conflicts
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each results}}
+                <tr>
+                  <td>
+                    {{name}}
+                  </td>
+                  <td>
+                    {{boardingTime}}
+                  </td>
+                  <td>
+                    {{conflicts}}
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div id="chart1" class="mt-5">
+
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div id="chart2" class="mt-5">
+
+      </div>
+    </div>
+  </div>
+
+
+</template>

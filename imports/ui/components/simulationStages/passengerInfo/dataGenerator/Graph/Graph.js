@@ -16,7 +16,7 @@ Template.Graph.events({
 });
 
 Template.Graph.onCreated(function() {
-  Meteor.Loader.loadJs("/js/plotly.js");
+  
   // Meteor.Loader.loadJs("/js/math.js");
   var instance;
   instance = this;
@@ -29,11 +29,11 @@ Template.Graph.onRendered(function() {
   // alert("Hi");
   var self = this;
   var template_instance = Template.instance();
-  
+
   setTimeout(function(){
     function sin(x) {
         return Math.sin(x);
-        
+
     }
 
     console.log("Data to visualize: " + dataToVisualize);
@@ -50,7 +50,7 @@ Template.Graph.onRendered(function() {
       xbins: {
         start: 18,
         // size: 5,
-        end: 78 
+        end: 78
       }
     };
 
@@ -62,7 +62,7 @@ Template.Graph.onRendered(function() {
       xbins: {
         start: 1,
         // size: 5,
-        end: 15 
+        end: 15
       }
     };
 
@@ -75,7 +75,7 @@ Template.Graph.onRendered(function() {
      {
         var data = [trace2];
      }
-    
+
 
     // adding x and y axis titles
     var layout = {

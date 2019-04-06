@@ -16,6 +16,8 @@ import '../simulationStages/passengerInfo/passengerGenerator/passengerGenerator.
 import '../simulationStages/passengerInfo/passengerGenerator/passengerGenerator.js';
 import '../simulationStages/capacityForm.html';
 import '../simulationStages/capacityForm.js';
+import '../simulationStages/compareResults.html';
+import '../simulationStages/compareResults.js';
 import '../simulationStages/boardingProcess.html';
 import '../simulationStages/boardingProcess.js';
 
@@ -32,6 +34,9 @@ Template.Home.helpers({
 	hasCapacityInfo(){
 		return appScopeVariable.noOfPassengers.get() && appScopeVariable.planeCapacity.get();
 	},
+	hasResults(){
+		return appScopeVariable.results.get();
+	}
 });
 
 Template.Home.events({
@@ -52,6 +57,9 @@ Template.Home.events({
 		if(tab_name == "boardingProcess"){
 			activeTab.set(tab_name);
 		}
+		if(tab_name == "compareResults"){
+			activeTab.set(tab_name);
+		}
 	},
 
 });
@@ -68,6 +76,11 @@ Template.Home.onCreated(function() {
 	appScopeVariable.noOfPassengers = new ReactiveVar(0);
 	appScopeVariable.totalBoardingTime = new ReactiveVar(0);
 	appScopeVariable.totalConflicts = new ReactiveVar(0);
+	appScopeVariable.results = new ReactiveVar([]);
+	appScopeVariable.currentlySimulatedProcess = new ReactiveVar("By Age Ascending");
+
+	Meteor.Loader.loadJs("/js/plotly.js");
+
 });
 
 Template.Home.onRendered(function() {
