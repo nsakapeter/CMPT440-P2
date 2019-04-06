@@ -1,5 +1,6 @@
 const d3 = require('d3');
 
+
 if(Meteor.isClient){
 
 }
@@ -15,9 +16,12 @@ Template.boardingProcess.events({
 
 Template.boardingProcess.onCreated(function() {
 	var self = this;
+
 });
 
 Template.boardingProcess.onRendered(function() {
+
+
     width = document.body.clientWidth;
     var board_x = Math.round(document.body.clientWidth/2-(document.body.clientWidth/3)+100);
     var board_y = Math.round(document.body.clientHeight/2);
@@ -110,11 +114,11 @@ Template.boardingProcess.onRendered(function() {
         //play/pause button
         d3.select("#pause-play-btn").on("click", function(e){
             if(!panel_play) {
-                this.innerHTML = ">";
+                this.innerHTML = "Play";
                 clearInterval(countdown);
             } else {
                 showTempPlayButton(0);
-                this.innerHTML = "=";
+                this.innerHTML = "Pause";
                 countdown = setInterval(function(){countDown()},tickspeed);
             }
             panel_play = !panel_play;
@@ -146,14 +150,12 @@ Template.boardingProcess.onRendered(function() {
 
         //temp play button
         d3.select("#temp-pause-play-btn")
-            .style("position","fixed")
-            .style("left",(document.body.clientWidth/2)+"px")
-            .style("top",(document.body.clientHeight/2)+"px")
             .on("click", function(e){
-                d3.select("#pause-play-btn").html("=");
+                d3.select("#pause-play-btn").html("Pause");
                 panel_play = false;
                 countdown = setInterval(function(){countDown()},tickspeed);
                 d3.select(this).style("display","none");
+								simulationBegan.set(true);
             });
 
         //reset button; reparse data and reset panel values
@@ -167,7 +169,7 @@ Template.boardingProcess.onRendered(function() {
 
             //play/pause button update
             panel_play = true;
-            d3.select("#pause-play-btn").html(">");
+            d3.select("#pause-play-btn").html("Play");
 
 			tickspeed = 20;
             clearInterval(countdown);

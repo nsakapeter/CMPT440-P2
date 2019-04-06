@@ -2,16 +2,41 @@
     <body>
     <div id="boardingProcess-canvas">
         <div id="boardingProcess-panel">
-            <form id="panel-form" onclick="return false;">
-                <button id="pause-play-btn">></button>
-                <button id="skip-btn">>|</button>
-                <button id="reset-btn">reset</button>
-                <button id="speed-btn">speed</button>
-                <button id="passenger_text-btn">toggle passenger text</button>
-                <button id="temp-pause-play-btn">click to begin simulation</button>
-            </form>
-            <div id="conflicts-btn">total conflicts: <span id="conflicts-btn-value">0</span></div>
-            <div id="time-btn">time elapsed: <span id="time-btn-value">0</span></div>
+          <div class="element-box">
+              <div class="element-box-content">
+                <div class="row">
+                  <div class="col-md-3 d-flex align-items-center justify-content-center"  style="">
+                    <div id="conflicts-btn">Total Conflicts: <span id="conflicts-btn-value">0</span></div>
+                  </div>
+                  <div class="col-md-3 d-flex align-items-center justify-content-center"  style="">
+                    <div id="time-btn">Time Elapsed: <span id="time-btn-value">0</span></div>
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center justify-content-center"  style="">
+                    <!-- {{#if simulationBegan}} -->
+                    <button class="mr-2 mb-2 btn btn-primary" type="button" id="pause-play-btn"> Play</button>
+                    <button class="mr-2 mb-2 btn btn-secondary" type="button" id="skip-btn"> Skip</button>
+                    <button class="mr-2 mb-2 btn btn-success" type="button" id="reset-btn"> Reset</button>
+                    <button class="mr-2 mb-2 btn btn-info" type="button" id="speed-btn"> Speed</button>
+                    <button class="mr-2 mb-2 btn btn-warning" type="button" id="passenger_text-btn"> Toggele Passenger #</button>
+                    <!-- {{else}}
+                      <button class="mr-2 mb-2 btn btn-primary" type="button" id="temp-pause-play-btn"> Begin Simulation</button>
+                    {{/if}} -->
+
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+            <!-- <form id="panel-form" onclick="return false;">
+                <button >></button>
+                <button >>|</button>
+                <button >reset</button>
+                <button >speed</button>
+                <button >toggle passenger text</button>
+                <button id="t">click to begin simulation</button>
+            </form> -->
+
         </div>
     </div>
     </body>

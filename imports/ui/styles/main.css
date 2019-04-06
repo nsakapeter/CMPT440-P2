@@ -29003,12 +29003,7 @@ body, body.auth-wrapper .all-wrapper {
 }
 
 #boardingProcess-panel {
-  border: solid red 1px;
-  width: 100px;
-  height: 300px;
-  position: absolute;
-  left: 0;
-  top: 60px;
+
 }
 
 @import "custom.css";
