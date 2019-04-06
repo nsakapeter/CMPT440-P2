@@ -206,7 +206,7 @@ Template.boardingProcess.onRendered(function() {
 
 
 //end port for passengers:
-    var dock2_x = appScopeVariable.planeCapacity.get()/6;
+    var dock2_x = appScopeVariable.planeCapacity.get()/6 + 1;
     var dock2_y = 0;
     var passengerDock2 = dockGroup.append("g")
         .append("rect")
@@ -266,12 +266,12 @@ Template.boardingProcess.onRendered(function() {
 
 
 		for (var i = 1; i < 4; i++) {
-			for (var j = 1; j < (appScopeVariable.planeCapacity.get() / 6); j++) {
+			for (var j = 1; j <= (appScopeVariable.planeCapacity.get() / 6); j++) {
 				chairAt(j,i);
 			}
 		}
 
-		for (var i = 1; i < (appScopeVariable.planeCapacity.get() / 6); i++) {
+		for (var i = 1; i <= (appScopeVariable.planeCapacity.get() / 6); i++) {
 			for (var j = -1; j > -4; j--) {
 				chairAt(i,j);
 			}
@@ -375,7 +375,11 @@ Template.boardingProcess.onRendered(function() {
 //actions every game tick: data
     function countDown() {
         //set countdown to ++
-        d3.select("#time-btn-value").html(parseInt(d3.select("#time-btn-value").html())+1);
+
+        d3.select("#hidden-time-btn-value").html(parseInt(d3.select("#hidden-time-btn-value").html())+1);
+				var currentTime = parseInt(d3.select("#hidden-time-btn-value").html());
+				var newTime = Math.floor(currentTime / 60) + ":" + (currentTime - (Math.floor(currentTime / 60) * 60))
+        d3.select("#time-btn-value").html(newTime);
 
         for(let i=0;i<data.length;i++) {
             var curr_passenger = data[i];
