@@ -28,15 +28,15 @@ Template.passengerGenerator.events({
 		//and we create the sigma from (max-min)/4
 		//we can use these formulas because we are given the max and min speed for a range of ages
 		//our speed is in METRES PER SECOND, MILES PER HOUR is another option if needed
-		
-		
+
+
 
 		for (var i = 0; i < agesToSimulate.get().length; i++) {
 			var passenger = {
 					age: agesToSimulate.get()[i],
 					serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
 					luggageWeight: luggagesToSimulate.get()[i],
-					walkingSpeed: 5, 
+					walkingSpeed: 5,
 					settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
 					// seatNo: (parseInt(i/6) + 1 ) < 10 ? "0" : "" + (parseInt(i/6) + 1) + alphabets[i%6]
 			}
@@ -100,6 +100,7 @@ Template.passengerGenerator.events({
 			passengerList.push(passenger);
 		}
 		instance.passengers.set(passengerList);
+		appScopeVariable.passengers.set(passengerList);
 		instance.generatingPassengers.set(false);
 	},
 	'change .sortTypeDropdown'(event, instance) {
@@ -123,6 +124,7 @@ Template.passengerGenerator.events({
 			default:
 				break;
 		}
+		appScopeVariable.passengers.set(passengerList);
 		instance.passengers.set(passengerList);
 	},
 	// 'change .sortDirectionDropdown'(event, instance) {

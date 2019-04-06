@@ -26,7 +26,8 @@ Template.boardingProcess.onRendered(function() {
     var board_x = Math.round(document.body.clientWidth/2-(document.body.clientWidth/3)+100);
     var board_y = Math.round(document.body.clientHeight/2);
     var tickspeed = 20;
-    var rawPassengerData = samplePassengerData(100);
+    // var rawPassengerData = samplePassengerData(100);
+		var rawPassengerData = appScopeVariable.passengers.get();
     var data = ParsePassengerData(rawPassengerData);
     var num_passengers = data.length;
     var plane_length = num_passengers; //how long the plane isle is (how many passengers long)
