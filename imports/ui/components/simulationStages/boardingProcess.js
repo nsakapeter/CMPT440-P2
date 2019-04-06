@@ -205,7 +205,7 @@ Template.boardingProcess.onRendered(function() {
 
 
 //end port for passengers:
-    var dock2_x = num_passengers;
+    var dock2_x = appScopeVariable.planeCapacity.get()/6;
     var dock2_y = 0;
     var passengerDock2 = dockGroup.append("g")
         .append("rect")
@@ -263,9 +263,18 @@ Template.boardingProcess.onRendered(function() {
     }
 
 
-    chairAt(3,0);
-    chairAt(3,1);
-    chairAt(3,2);
+
+		for (var i = 1; i < 4; i++) {
+			for (var j = 1; j < (appScopeVariable.planeCapacity.get() / 6); j++) {
+				chairAt(j,i);
+			}
+		}
+
+		for (var i = 1; i < (appScopeVariable.planeCapacity.get() / 6); i++) {
+			for (var j = -1; j > -4; j--) {
+				chairAt(i,j);
+			}
+		}
 
     planeGroup.lower();
 //initial update attributes to draw objects to screen

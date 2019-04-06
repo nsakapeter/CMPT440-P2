@@ -6,20 +6,35 @@
         <form>
           <div class="steps-w">
             <div class="step-triggers">
-              <a class="step-trigger {{#if isCurrentTab 'capacityForm'}}active{{/if}}" data-name="capacityForm">Capacity Info</a>
-              <a class="step-trigger {{#if isCurrentTab 'passengerInfo'}}active{{/if}}" data-name="passengerInfo">Passenger Info</a>
-              <a class="step-trigger {{#if isCurrentTab 'boardingProcess'}}active{{/if}}"  data-name="boardingProcess">Boarding Process</a>
+              <a class="step-trigger {{#if isCurrentTab 'capacityForm'}}active{{/if}}">Capacity Info</a>
+              <a class="step-trigger {{#if isCurrentTab 'passengerInfo'}}active{{/if}}">Passenger Info</a>
+              <a class="step-trigger {{#if isCurrentTab 'boardingProcess'}}active{{/if}}">Boarding Process</a>
             </div>
             <div class="step-contents" style="">
-              <div class="step-content {{#if isCurrentTab 'capacityForm'}}active{{/if}}">
-                {{> capacityForm}}
-              </div>
-              <div class="step-content {{#if isCurrentTab 'passengerInfo'}}active{{/if}}">
+              {{#if isCurrentTab 'capacityForm'}}
+                <div class="step-content {{#if isCurrentTab 'capacityForm'}}active{{/if}}">
+                  {{> capacityForm}}
+                </div>
+              {{/if}}
+
+              {{#if isCurrentTab 'passengerInfo'}}
+                <div class="step-content {{#if isCurrentTab 'passengerInfo'}}active{{/if}}">
+                  {{> passengerInfo}}
+                </div>
+              {{/if}}
+
+              {{#if isCurrentTab 'boardingProcess'}}
+                <div class="step-content {{#if isCurrentTab 'boardingProcess'}}active{{/if}}">
+                  {{> boardingProcess}}
+                </div>
+              {{/if}}
+
+              <!-- <div class="step-content {{#if isCurrentTab 'passengerInfo'}}active{{/if}}">
                 {{> passengerInfo}}
               </div>
               <div class="step-content {{#if isCurrentTab 'boardingProcess'}}active{{/if}}">
                 {{> boardingProcess}}
-              </div>
+              </div> -->
             </div>
           </div>
         </form>
