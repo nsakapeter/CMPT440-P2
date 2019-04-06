@@ -88,10 +88,12 @@ Template.boardingProcess.onRendered(function() {
     zoom.scaleExtent([1, num_passengers/5]);
     */
 
-
-
-//grouping for circles and text
+//groupings for shapes
     var circleGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
+    var planeGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
+    var dockGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
+
+
 
 
     var domReady = function(callback) {
@@ -184,16 +186,17 @@ Template.boardingProcess.onRendered(function() {
     });
 
 
+// - Shapes -
 //Passenger Docks
     var dock_scale = scale/4;
 
 //start port for passengers
     var dock_x = 0;
     var dock_y = 0;
-    var passengerDock = svg.append("g")
+    var passengerDock = dockGroup.append("g")
         .append("rect")
-        .attr("x", (dock_x * scale) + board_x - ((dock_scale/2)) )
-        .attr("y", (-dock_y * scale)+ board_y - ((dock_scale/2)) )
+        .attr("x", (dock_x * scale) + parseInt(dockGroup.attr("x")) - ((dock_scale/2)) )
+        .attr("y", (-dock_y * scale)+ parseInt(dockGroup.attr("y")) - ((dock_scale/2)) )
         .attr("width", dock_scale)
         .attr("height", dock_scale)
         .style("fill", "#ffc205");
@@ -202,17 +205,69 @@ Template.boardingProcess.onRendered(function() {
 //end port for passengers:
     var dock2_x = num_passengers;
     var dock2_y = 0;
-    var passengerDock2 = svg.append("g")
+    var passengerDock2 = dockGroup.append("g")
         .append("rect")
-        .attr("x", (dock2_x * scale) + board_x - ((dock_scale/2)) )
-        .attr("y", (-dock2_y * scale)+ board_y - ((dock_scale/2)) )
+        .attr("x", (dock2_x * scale) + parseInt(dockGroup.attr("x")) - ((dock_scale/2)) )
+        .attr("y", (-dock2_y * scale)+ parseInt(dockGroup.attr("y")) - ((dock_scale/2)) )
         .attr("width", dock_scale)
         .attr("height", dock_scale)
         .style("fill", "#ffc205");
 
+//Passenger Chairs
+    var chair_scale = scale/1.6;
+
+    function chairAt(chair_x,chair_y) {
+        var passengerChair = planeGroup.append("g");
+
+        //ass cushion
+        passengerChair
+            .append("rect")
+            .attr("x", (chair_x * scale) + parseInt(planeGroup.attr("x")) - (chair_scale / 2))
+            .attr("y", (-chair_y * scale) + parseInt(planeGroup.attr("y")) - (chair_scale / 2))
+            .attr("width", chair_scale)
+            .attr("height", chair_scale)
+            .attr('fill', '#49B2EA');
+
+        //left arm cushion
+        passengerChair
+            .append("rect")
+            .attr("x", (chair_x * scale) + parseInt(planeGroup.attr("x")) - (chair_scale / 2))
+            .attr("y", (-chair_y * scale) + parseInt(planeGroup.attr("y")) - (chair_scale / 2) - (chair_scale / 3))
+            .attr("width", chair_scale * 1.25)
+            .attr("height", chair_scale / 3)
+            .attr('fill', '#B2B2B2');
+
+        //right arm cushion
+        passengerChair
+            .append("rect")
+            .attr("x", (chair_x * scale) + parseInt(planeGroup.attr("x")) - (chair_scale/2))
+            .attr("y", (-chair_y * scale) + parseInt(planeGroup.attr("y")) - (chair_scale/2) + chair_scale)
+            .attr("width", chair_scale * 1.25)
+            .attr("height", chair_scale / 3)
+            .attr('fill', '#B2B2B2');
+
+        //back cushion
+        var v_stretch = 1.7;
+        passengerChair
+            .append("rect")
+            .attr("x", (chair_x * scale) + parseInt(planeGroup.attr("x")) - (chair_scale / 2) - (chair_scale /2))
+            .attr("y", (-chair_y * scale) + parseInt(planeGroup.attr("y")) - (v_stretch * chair_scale * 0.5))
+            .attr("width", chair_scale / 2)
+            .attr("height", chair_scale * v_stretch)
+            .attr("stroke", "#3D9CD5")
+            .attr("stroke-width", "3px")
+            .attr('fill', '#49B2EA');
+
+    }
 
 
+    chairAt(3,0);
+    chairAt(3,1);
+    chairAt(3,2);
 
+    planeGroup.lower();
+//initial update attributes to draw objects to screen
+    update();
 
 
 
