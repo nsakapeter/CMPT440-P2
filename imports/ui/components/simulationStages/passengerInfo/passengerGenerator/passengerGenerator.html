@@ -35,7 +35,7 @@
     </h6>
     <button class="btn btn-primary m-auto generatePassengers"> Generate Passengers</button>
 
-    <button class="btn btn-success m-auto step-trigger" data-name="boardingProcess"> Start Simulation</button>
+    <button class="btn btn-success m-auto step-trigger" style="{{#if passengers}}opacity: 1.0;{{else}}opacity: 0.0;{{/if}}" data-name="boardingProcess"> Start Simulation</button>
 
     <div class="element-box">
       <table class="table table-lightborder table-striped">
