@@ -110,7 +110,7 @@ Template.passengerGenerator.events({
 		switch ($(event.target).val()) {
 			case "age":
 				passengerList.sort(compareAge);
-				appScopeVariable.currentlySimulatedProcess.set("By Age " + $(".sortDirectionDropdown").val()); 
+				appScopeVariable.currentlySimulatedProcess.set("By Age " + $(".sortDirectionDropdown").val());
 				break;
 			case "lw":
 				passengerList.sort(compareLuggageWeight);
@@ -124,6 +124,7 @@ Template.passengerGenerator.events({
 			appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
 				break;
 			case "wilma":
+			passengerList.sort(compareWilma);
 			appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
 				break;
 			default:
@@ -212,4 +213,20 @@ function compareRow(a, b) {
     comparison = -1;
   }
   return comparison;
+}
+
+function compareWilma(a, b) {
+  // Use toUpperCase() to ignore character casing
+	const seatNoA = a.seatNo;
+  const seatNoB = b.seatNo;
+	const seatCharA = seatNoA.slice(2);
+	const seatCharB = seatNoB.slice(2);
+  let comparison = 0;
+  if (seatCharA > seatCharB) {
+    comparison = 1;
+  } else if (seatCharA < seatCharB) {
+    comparison = -1;
+  }
+  return comparison;
+
 }
