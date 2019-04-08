@@ -22,7 +22,7 @@ Template.compareResults.events({
 Template.compareResults.onCreated(function() {
 });
 
-Template.compareResults.onRendered(function() {
+Template.compareResults.onRendered(function() {   
   var self = this;
 
   const BoardingTimeValues = Array.from(appScopeVariable.results.get(), x => x.boardingTime);

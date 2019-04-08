@@ -1,6 +1,11 @@
 
 if(Meteor.isClient){
 
+}
+
+
+
+if(Meteor.isServer){
 
 }
 
@@ -59,6 +64,9 @@ Template.capacityForm.onCreated(function() {
 });
 
 Template.capacityForm.onRendered(function() {
+  // if (Meteor.settings.appScopeVariables.planeCapacity) {
+  //   $(".planeCapacity").val(Meteor.settings.appScopeVariables.planeCapacity);
+  // }
 
 
 

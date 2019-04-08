@@ -10,7 +10,7 @@
               <a class="step-trigger {{#if isCurrentTab 'passengerInfo'}}active{{/if}}" data-name="{{#if hasCapacityInfo}}passengerInfo{{/if}}">Passenger Info</a>
               <a class="step-trigger {{#if isCurrentTab 'boardingProcess'}}active{{/if}}"  data-name="{{#if hasPassengers}}boardingProcess{{/if}}">Boarding Process</a>
               <a class="step-trigger {{#if isCurrentTab 'compareResults'}}active{{/if}}"  data-name="{{#if hasResults}}compareResults{{/if}}">Compare Results</a>
-
+              <a class="step-trigger pt-3 {{#if isCurrentTab 'runExperiments'}}active{{/if}}"  data-name="runExperiments" style=" background: yellow;">Run Experiments</a>
             </div>
             <div class="step-contents" style="">
               {{#if isCurrentTab 'capacityForm'}}
@@ -34,6 +34,12 @@
               {{#if isCurrentTab 'compareResults'}}
                 <div class="step-content {{#if isCurrentTab 'compareResults'}}active{{/if}}">
                   {{> compareResults}}
+                </div>
+              {{/if}}
+
+              {{#if isCurrentTab 'runExperiments'}}
+                <div class="step-content {{#if isCurrentTab 'runExperiments'}}active{{/if}}">
+                  {{> runExperiments}}
                 </div>
               {{/if}}
 

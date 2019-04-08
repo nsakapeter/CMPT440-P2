@@ -496,6 +496,7 @@ Template.boardingProcess.onRendered(function() {
         //traverse from top to bottom, passenger 0 to end
         for(var i=0;i<passengerData.length;i++){
             //passengers are cued from the -x to 0; 0 being the foremost passenger
+						// passengerData[i].walkingSpeed = passengerData[i].walkingSpeed * 100;
             passengerData[i].x = -i;
             passengerData[i].y = 0;
             passengerData[i].wait_current = 0;
