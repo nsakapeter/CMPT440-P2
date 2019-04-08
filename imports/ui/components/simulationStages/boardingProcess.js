@@ -461,6 +461,9 @@ Template.boardingProcess.onRendered(function() {
             if (curr_passenger.x===1) {
                 curr_passenger.visible = 1;
             }
+            else if(curr_passenger.x===curr_passenger.){
+
+            }
             //if passenger reached the end of the plane
             //else if (curr_passenger.x===parseInt(passengerDock2.attr("x"))){
             else if (curr_passenger.x===dock2_x){
