@@ -35,9 +35,10 @@ Template.boardingProcess.onRendered(function() {
     var countdown;
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
-    var num_passengers = 18;
-    var plane_capacity = num_passengers*2;
-//var plane_capacity = appScopeVariable.planeCapacity.get();
+    // var num_passengers = 18;
+		var num_passengers = appScopeVariable.noOfPassengers.get();
+    // var plane_capacity = num_passengers*2;
+		var plane_capacity = appScopeVariable.planeCapacity.get();
 
     var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
 //var rawPassengerData = appScopeVariable.passengers.get();
@@ -461,9 +462,9 @@ Template.boardingProcess.onRendered(function() {
             if (curr_passenger.x===1) {
                 curr_passenger.visible = 1;
             }
-            else if(curr_passenger.x===curr_passenger.){
-
-            }
+            // else if(curr_passenger.x===curr_passenger.){
+						//
+            // }
             //if passenger reached the end of the plane
             //else if (curr_passenger.x===parseInt(passengerDock2.attr("x"))){
             else if (curr_passenger.x===dock2_x){
