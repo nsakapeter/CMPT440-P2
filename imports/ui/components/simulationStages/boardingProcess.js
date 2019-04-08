@@ -30,16 +30,18 @@ Template.boardingProcess.onRendered(function() {
 
     width = document.body.clientWidth;
     var board_x = Math.round(document.body.clientWidth/2-(document.body.clientWidth/3)+100);
-    var board_y = Math.round(document.body.clientHeight/2);
-    var tickspeed = 20;
-    // var rawPassengerData = samplePassengerData(100);
-		var rawPassengerData = appScopeVariable.passengers.get();
-    var data = ParsePassengerData(rawPassengerData);
-    var num_passengers = data.length;
-    var plane_length = num_passengers; //how long the plane isle is (how many passengers long)
+//var board_y = Math.round(document.body.clientHeight/2);
+    var board_y = Math.round(Math.max( window.innerHeight, document.body.clientHeight )/2);
     var countdown;
     var panel_play = true;
+    var tickspeed = 20; //interval of a game tick in miliseconds
+    var num_passengers = 18;
+    var plane_capacity = num_passengers*2;
+//var plane_capacity = appScopeVariable.planeCapacity.get();
 
+    var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
+//var rawPassengerData = appScopeVariable.passengers.get();
+    var data = ParsePassengerData(rawPassengerData);
     /*TODO:
 
     next:
@@ -54,10 +56,13 @@ Template.boardingProcess.onRendered(function() {
 
     extra:
     animations - may not need since fast game tick
-    on mouseover to show passenger data
     color on settling
     color on conflict
     color on settled
+
+    bugs:
+    invisible passengers (past dock) is still checked to see if move
+    bug should never happen because passenger at end of plane shouldnt be looking to advance but to go in seat
     */
 
 
@@ -83,11 +88,12 @@ Template.boardingProcess.onRendered(function() {
         .attr('transform',"translate("+zoom_var+","+zoom_var+")");
 
 //overlay so zoom can be used on any point and not just objects
-    var overlay = svg.append("g")
+    var overlay = svg//.append("g")
         .append("rect")
+        .attr("class","zoom_overlay")
         .attr("fill","transparent")
-        .attr("width", "100%")
-        .attr("height", "100%");
+        .attr("width", "150%")
+        .attr("height", "150%");
 
 //draw the same and zoom out : way 1 of 2
     var scale = 80;
@@ -100,9 +106,14 @@ Template.boardingProcess.onRendered(function() {
     */
 
 //groupings for shapes
-    var circleGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
-    var planeGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
-    var dockGroup = svg.append("g").attr("x",board_x).attr("y",board_y);
+    var circleGroup = svg.append("g").attr("class","circle_group").attr("x",board_x).attr("y",board_y);
+    var planeGroup = svg.append("g").attr("class","plane_group").attr("x",board_x).attr("y",board_y);
+    var dockGroup = svg.append("g").attr("class","dock_group").attr("x",board_x).attr("y",board_y);
+    var hudGroup = svg.append("g").attr("class","circle_group").attr("x",board_x).attr("y",board_y);
+    var hudText;
+
+
+
 
 
 
@@ -164,7 +175,7 @@ Template.boardingProcess.onRendered(function() {
                 panel_play = false;
                 countdown = setInterval(function(){countDown()},tickspeed);
                 d3.select(this).style("display","none");
-								simulationBegan.set(true);
+                simulationBegan.set(true);
             });
 
 
@@ -181,7 +192,7 @@ Template.boardingProcess.onRendered(function() {
             panel_play = true;
             d3.select("#pause-play-btn").html("Play");
 
-			tickspeed = 20;
+            tickspeed = 20;
             clearInterval(countdown);
 
             //display temp play buttom
@@ -193,25 +204,24 @@ Template.boardingProcess.onRendered(function() {
         //initial update attributes to draw objects to screen
         update();
 
-				d3.select("#save-result")
-           .on("click", function(e){
-						   var alreadySavedResults = appScopeVariable.results.get();
-							 alreadySavedResults.push({
-								 "name": appScopeVariable.currentlySimulatedProcess.get(),
-								 "boardingTime": d3.select("#hidden-time-btn-value").html(),
-								 "conflicts": d3.select("#conflicts-btn-value").html()
-							 });
-							 appScopeVariable.results.set(alreadySavedResults);
-							 Bert.alert({
-							  title: 'Saved',
-							  message: 'Results successfully saved',
-							  type: 'success',
-							  style: 'growl-bottom-right',
-							  icon: 'fas fa-music'
-							});
-							console.log(appScopeVariable.results.get());
-           });
-
+        d3.select("#save-result")
+            .on("click", function(e){
+                var alreadySavedResults = appScopeVariable.results.get();
+                alreadySavedResults.push({
+                    "name": appScopeVariable.currentlySimulatedProcess.get(),
+                    "boardingTime": d3.select("#hidden-time-btn-value").html(),
+                    "conflicts": d3.select("#conflicts-btn-value").html()
+                });
+                appScopeVariable.results.set(alreadySavedResults);
+                Bert.alert({
+                    title: 'Saved',
+                    message: 'Results successfully saved',
+                    type: 'success',
+                    style: 'growl-bottom-right',
+                    icon: 'fas fa-music'
+                });
+                console.log(appScopeVariable.results.get());
+            });
     });
 
 
@@ -232,7 +242,8 @@ Template.boardingProcess.onRendered(function() {
 
 
 //end port for passengers:
-    var dock2_x = appScopeVariable.planeCapacity.get()/6 + 1;
+    var dock2_x = (plane_capacity/6) + 1;
+
     var dock2_y = 0;
     var passengerDock2 = dockGroup.append("g")
         .append("rect")
@@ -286,30 +297,25 @@ Template.boardingProcess.onRendered(function() {
             .attr("stroke", "#3D9CD5")
             .attr("stroke-width", "3px")
             .attr('fill', '#49B2EA');
-
     }
 
 
 
-		for (var i = 1; i < 4; i++) {
-			for (var j = 1; j <= (appScopeVariable.planeCapacity.get() / 6); j++) {
-				chairAt(j,i);
-			}
-		}
+    for (var i = 1; i < 4; i++) {
+        for (var j = 1; j <= (plane_capacity / 6); j++) {
+            chairAt(j,i);
+        }
+    }
 
-		for (var i = 1; i <= (appScopeVariable.planeCapacity.get() / 6); i++) {
-			for (var j = -1; j > -4; j--) {
-				chairAt(i,j);
-			}
-		}
+    for (var i = 1; i <= (plane_capacity / 6); i++) {
+        for (var j = -1; j > -4; j--) {
+            chairAt(i,j);
+        }
+    }
 
     planeGroup.lower();
 //initial update attributes to draw objects to screen
     update();
-
-
-
-
 
 
 
@@ -340,7 +346,12 @@ Template.boardingProcess.onRendered(function() {
         }
     }
 
+    console.log(rawPassengerData);
 
+// Define the div for the tooltip
+    var div = svg.append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
 //update objects: data
     function update() {
@@ -351,7 +362,7 @@ Template.boardingProcess.onRendered(function() {
         //update circles: select, data, attributes
         var circles = circleGroup.selectAll("circle")
             .data(data.filter(function(d) { return parseInt(d.visible) === 1; }))
-            .attr("cx", function(d){return ((d.x * scale) + parseInt(circleGroup.attr("x")) );})
+            .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
             .attr("wait_current",function(d){return d.wait_current;});
@@ -363,10 +374,23 @@ Template.boardingProcess.onRendered(function() {
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
             .attr("wait_current",function(d){return d.wait_current;})
-            .attr("fill", "#B8DEE6");
-
-        circles.on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
-            .on("mouseout", function(){d3.select(this).style("fill", "#B8DEE6");});
+            .attr("fill", "#B8DEE6")
+            .on("mouseover", function(d) {
+                d3.select(this).style("fill", "aliceblue");
+                hudText = hudGroup
+                    .append("text")
+                    .attr("class","centre-text")
+                    .attr("x", d3.select(this).attr("cx"))
+                    .attr("y", parseInt(d3.select(this).attr("cy"))-scale/1.5)
+                    .text(d.serialNo)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", scale/2+"px")
+                    .attr("fill", "#718374");
+            })
+            .on("mouseout", function(){
+                d3.select(this).style("fill", "#B8DEE6");
+                hudText.remove();
+            });
 
         //exit behaviour: remove circles that dont have corresponding data (filtered out in update)
         circles.exit().remove();
@@ -403,9 +427,9 @@ Template.boardingProcess.onRendered(function() {
         //set countdown to ++
 
         d3.select("#hidden-time-btn-value").html(parseInt(d3.select("#hidden-time-btn-value").html())+1);
-				//convert time to mins and seconds
-				var currentTime = parseInt(d3.select("#hidden-time-btn-value").html());
-				var newTime = Math.floor(currentTime / 60) + ":" + (currentTime - (Math.floor(currentTime / 60) * 60))
+        //convert time to mins and seconds
+        var currentTime = parseInt(d3.select("#hidden-time-btn-value").html());
+        var newTime = Math.floor(currentTime / 60) + ":" + (currentTime - (Math.floor(currentTime / 60) * 60))
         d3.select("#time-btn-value").html(newTime);
 
         for(let i=0;i<data.length;i++) {
@@ -438,10 +462,13 @@ Template.boardingProcess.onRendered(function() {
                 curr_passenger.visible = 1;
             }
             //if passenger reached the end of the plane
-            else if (curr_passenger.x===plane_length){
+            //else if (curr_passenger.x===parseInt(passengerDock2.attr("x"))){
+            else if (curr_passenger.x===dock2_x){
                 curr_passenger.visible = 0;
             }
         }
+
+
         update();
     }
 
@@ -473,17 +500,32 @@ Template.boardingProcess.onRendered(function() {
         return Math.floor(Math.random() * max) + min;
     }
 
-//generate random passenger data
-    function samplePassengerData(n) {
+//generate smart random passenger data
+    function samplePassengerData(n,capacity) {
+        if (n>capacity) {return null;}
+
         var passengerList = [];
-        for(let i=0;i<n;i++) {
+        var seatLetter = ["A","B","C","D","E","F"];
+        var possibleSeats = [];
+
+        //generate list of possible seat numbers
+        for (let i=0;i<capacity;i++){
+            possibleSeats.push((Math.floor((i/6)%6)+1)+seatLetter[i%seatLetter.length]);
+        }
+
+        //randomly assign seat numbers to passengers, delete each seat assigned
+        for (let i=0;i<n;i++){
+            var temp_index = Math.floor(Math.random()*possibleSeats.length);
             passengerList.push({
                 age: rando(18, 70),
-                serialNo: rando(10, 99) + rando("A", "Z") + rando(1000, 9999),
                 luggageWeight: rando(1, 40),
                 walkingSpeed: rando(1, 9) / 10,
-                settlingTime: rando(1, 5)
+                settlingTime: rando(1, 5),
             });
+
+            passengerList[i].serialNo = possibleSeats[temp_index] + passengerList[i].age + passengerList[i].luggageWeight;
+
+            possibleSeats.splice( possibleSeats.indexOf(possibleSeats[temp_index]), 1 );
         }
         return passengerList;
     }
@@ -502,6 +544,9 @@ Template.boardingProcess.onRendered(function() {
             passengerData[i].wait_reset = 0;
             passengerData[i].visible = 0;
             passengerData[i].visible_text = 1;
+            passengerData[i].visible_info = 1;
+            passengerData[i].settling = 0;
+            passengerData[i].settled = 0;
         }
         return passengerData;
     }
