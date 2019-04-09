@@ -36,9 +36,7 @@ Template.passengerGenerator.events({
 					age: agesToSimulate.get()[i],
 					serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
 					luggageWeight: luggagesToSimulate.get()[i],
-					walkingSpeed: 5,
 					settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
-					// seatNo: (parseInt(i/6) + 1 ) < 10 ? "0" : "" + (parseInt(i/6) + 1) + alphabets[i%6]
 			}
 			if ((parseInt(i/6) + 1 ) < 10 ) {
 				passenger.seatNo = "0" + (parseInt(i/6) + 1) + alphabets[i%6];
@@ -46,6 +44,22 @@ Template.passengerGenerator.events({
 			else{
 				passenger.seatNo = (parseInt(i/6) + 1) + alphabets[i%6];
 			}
+
+			var firstZone = parseInt(agesToSimulate.get().length/4); //if in first quarter
+			var secondZone = parseInt(agesToSimulate.get().length/2); //if in second quarter
+			var thirdZone = firstZone + secondZone; 									//if in third quarter
+
+			if(i < firstZone) //if i is in the first quarter of passengers, zoneNo = 1
+			{
+				passenger.zoneNo = 1;
+			} else if (i < secondZone) // if i is in second quarter of passengers, zoneNo = 2
+			{
+				passenger.zoneNo = 2;
+			} else if (i < thirdZone)
+			{
+				passenger.zoneNo = 3;
+			} else passenger.zoneNo = 4;
+
 			if(agesToSimulate.get()[i] > 17 && agesToSimulate.get()[i] < 30) //speed for age range from 18 to 29
 			{
 				var maxSpeed = 1.36;
@@ -121,10 +135,11 @@ Template.passengerGenerator.events({
 				appScopeVariable.currentlySimulatedProcess.set("By row " + $(".sortDirectionDropdown").val());
 				break;
 			case "zone":
+			passengerList.sort(compareZone);
 			appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
 				break;
 			case "wilma":
-			passengerList.sort(compareWilma);
+			passengerList = sortByWilma(passengerList);
 			appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
 				break;
 			default:
@@ -215,18 +230,28 @@ function compareRow(a, b) {
   return comparison;
 }
 
-function compareWilma(a, b) {
+function compareZone(a, b) {
   // Use toUpperCase() to ignore character casing
-	const seatNoA = a.seatNo;
-  const seatNoB = b.seatNo;
-	const seatCharA = seatNoA.slice(2);
-	const seatCharB = seatNoB.slice(2);
+	const zoneNoA = a.zoneNo;
+  const zoneNoB = b.zoneNo;
   let comparison = 0;
-  if (seatCharA > seatCharB) {
+  if (zoneNoA > zoneNoB) {
     comparison = 1;
-  } else if (seatCharA < seatCharB) {
+  } else if (zoneNoA < zoneNoB) {
     comparison = -1;
   }
   return comparison;
+}
 
+function sortByWilma(passengerList) {
+	passengerList.sort(compareRow);
+	var sortedByWilma = [];
+	var arrayOrder = [0, 5, 1, 4, 2, 3];
+	for (var k = 0; k < 6; k++) {
+		var i = arrayOrder[k];
+		for (var j = 0; j < passengerList.length/6; j++) {
+			sortedByWilma.push(passengerList[(j*6) + i]);
+		}
+	}
+	return sortedByWilma;
 }

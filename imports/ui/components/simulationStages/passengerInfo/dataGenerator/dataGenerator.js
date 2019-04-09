@@ -113,7 +113,7 @@ Template.dataGenerator.onRendered(function() {
 				{
 					newValue = rand();
 				}
-				array.push(Math.round(newValue));
+				array.push(newValue.toFixed(2));
 			}
 
 		}
