@@ -20,6 +20,9 @@ import '../simulationStages/compareResults.html';
 import '../simulationStages/compareResults.js';
 import '../simulationStages/boardingProcess.html';
 import '../simulationStages/boardingProcess.js';
+import '../simulationStages/runExperiments.html';
+import '../simulationStages/runExperiments.js';
+
 
 activeTab = "";
 appScopeVariable = {};
@@ -60,6 +63,9 @@ Template.Home.events({
 		if(tab_name == "compareResults"){
 			activeTab.set(tab_name);
 		}
+		if(tab_name == "runExperiments"){
+			activeTab.set(tab_name);
+		}
 	},
 
 });
@@ -68,6 +74,7 @@ Template.Home.onCreated(function() {
   var context_data = this.data;
 
 	var self = this;
+
 	activeTab = new ReactiveVar("capacityForm");
 	appScopeVariable.ages = new ReactiveVar([]);
 	appScopeVariable.luggages = new ReactiveVar([]);
@@ -77,7 +84,9 @@ Template.Home.onCreated(function() {
 	appScopeVariable.totalBoardingTime = new ReactiveVar(0);
 	appScopeVariable.totalConflicts = new ReactiveVar(0);
 	appScopeVariable.results = new ReactiveVar([]);
-	appScopeVariable.currentlySimulatedProcess = new ReactiveVar("By Age Ascending");
+	appScopeVariable.currentlySimulatedProcess = new ReactiveVar("By Ages Ascending");
+
+
 
 	Meteor.Loader.loadJs("/js/plotly.js");
 

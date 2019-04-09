@@ -27,21 +27,23 @@ Template.boardingProcess.onCreated(function() {
 
 Template.boardingProcess.onRendered(function() {
 
-
     width = document.body.clientWidth;
     var board_x = Math.round(document.body.clientWidth/2-(document.body.clientWidth/3)+100);
-//var board_y = Math.round(document.body.clientHeight/2);
+    //var board_y = Math.round(document.body.clientHeight/2);
     var board_y = Math.round(Math.max( window.innerHeight, document.body.clientHeight )/2);
     var countdown;
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
-    // var num_passengers = 18;
-		var num_passengers = appScopeVariable.noOfPassengers.get();
-    // var plane_capacity = num_passengers*2;
-		var plane_capacity = appScopeVariable.planeCapacity.get();
 
-    var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
-//var rawPassengerData = appScopeVariable.passengers.get();
+    //var num_passengers = 36;
+    //var plane_capacity = num_passengers;
+    //var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
+
+    var plane_capacity = appScopeVariable.planeCapacity.get();
+    var num_passengers = appScopeVariable.noOfPassengers.get();
+    var rawPassengerData = appScopeVariable.passengers.get();
+
+
     var data = ParsePassengerData(rawPassengerData);
     /*TODO:
 
@@ -62,8 +64,16 @@ Template.boardingProcess.onRendered(function() {
     color on settled
 
     bugs:
+    need to filter out settled passengers before adjacent check
     invisible passengers (past dock) is still checked to see if move
     bug should never happen because passenger at end of plane shouldnt be looking to advance but to go in seat
+
+
+
+    next:
+    run experiment to skip, use while()
+    walking speed scaled down
+
     */
 
 
@@ -110,8 +120,10 @@ Template.boardingProcess.onRendered(function() {
     var circleGroup = svg.append("g").attr("class","circle_group").attr("x",board_x).attr("y",board_y);
     var planeGroup = svg.append("g").attr("class","plane_group").attr("x",board_x).attr("y",board_y);
     var dockGroup = svg.append("g").attr("class","dock_group").attr("x",board_x).attr("y",board_y);
-    var hudGroup = svg.append("g").attr("class","circle_group").attr("x",board_x).attr("y",board_y);
+    var hudGroup = svg.append("g").attr("class","hud_group").attr("x",board_x).attr("y",board_y);
     var hudText;
+
+
 
 
 
@@ -314,6 +326,7 @@ Template.boardingProcess.onRendered(function() {
         }
     }
 
+//set planegroup to back of canvas
     planeGroup.lower();
 //initial update attributes to draw objects to screen
     update();
@@ -324,14 +337,9 @@ Template.boardingProcess.onRendered(function() {
 
 
 
-
-
-
-
-
-
-
-
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
 
 
@@ -347,8 +355,6 @@ Template.boardingProcess.onRendered(function() {
         }
     }
 
-    console.log(rawPassengerData);
-
 // Define the div for the tooltip
     var div = svg.append("div")
         .attr("class", "tooltip")
@@ -360,13 +366,16 @@ Template.boardingProcess.onRendered(function() {
         /* circleGroup.selectAll("circle").transition().duration(1000).ease(d3.easeElastic)
              .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"))-1;})*/
 
+        //in queue passengers
         //update circles: select, data, attributes
         var circles = circleGroup.selectAll("circle")
-            .data(data.filter(function(d) { return parseInt(d.visible) === 1; }))
+        //.data(data.filter(function(d) { return ( (parseInt(d.visible) === 1) && (parseInt(d.settled) === 0) && (parseInt(d.settling) === 0) ); }))
+            .data(data.filter(function(d) { return ((parseInt(d.visible) === 1) && (parseInt(d.settled) === 0)); }))
             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
             .attr("wait_current",function(d){return d.wait_current;});
+
 
         //object behaviour for when new data is added: enter, append, attributes
         circles.enter()
@@ -395,6 +404,47 @@ Template.boardingProcess.onRendered(function() {
 
         //exit behaviour: remove circles that dont have corresponding data (filtered out in update)
         circles.exit().remove();
+
+
+        //settled passengers
+        //update text: select, data, attributes
+        var circle2 = planeGroup.selectAll("circle")
+            .data(data.filter(function(d) { return (parseInt(d.settled) === 1); }))
+            .attr("serialNo",function(d){return d.serialNo;})
+            .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
+            .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));});
+        //.attr("fill", "#E0995E");
+
+        //text behaviour for when new data is added: enter, append, attributes
+        circle2.enter()
+            .append("circle")
+            .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
+            .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
+            .attr("r", scale/2)
+            .attr("wait_current",function(d){return d.wait_current;})
+            .attr("fill", "#E0995E");
+
+
+        circle2.on("mouseenter", function(d) {
+            d3.select(this).style("fill", "aliceblue");
+            hudText = hudGroup
+                .append("text")
+                .attr("class","centre-text")
+                .attr("x", d3.select(this).attr("cx"))
+                .attr("y", parseInt(d3.select(this).attr("cy"))-scale/1.5)
+                .text(d.serialNo)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", scale/2+"px")
+                .attr("fill", "#718374");
+        })
+            .on("mouseleave", function(){
+                d3.select(this).style("fill", "#B8DEE6");
+                hudText.remove();
+            });
+
+
+        //exit behaviour: remove text
+        circle2.exit().remove();
 
 
         //update text: select, data, attributes
@@ -436,9 +486,34 @@ Template.boardingProcess.onRendered(function() {
         for(let i=0;i<data.length;i++) {
             var curr_passenger = data[i];
 
+            //skip if settled
+            if(parseInt(curr_passenger.settled)===1){continue;}
+
             //set visible and set real walking speed when in front of dock at pos (1,0)
             if(curr_passenger.x===0) {
                 curr_passenger.wait_reset = curr_passenger.walkingSpeed*10;
+            }
+
+            if ((curr_passenger.settling === 1)&&(parseInt(curr_passenger.wait_current)===0)) {
+                curr_passenger.settled = 1;
+                console.log("row:"+curr_passenger.rowNo+", seatNo:"+curr_passenger.seatNo+", ticket:"+curr_passenger.serialNo);
+                if(curr_passenger.rowNo==="A") {
+                    curr_passenger.y = -3;
+                } else if (curr_passenger.rowNo==="B") {
+                    curr_passenger.y = -2;
+                } else if (curr_passenger.rowNo==="C") {
+                    curr_passenger.y = -1;
+                } else if (curr_passenger.rowNo==="D") {
+                    curr_passenger.y = 1;
+                } else if (curr_passenger.rowNo==="E") {
+                    curr_passenger.y = 2;
+                } else if (curr_passenger.rowNo==="F") {
+                    curr_passenger.y = 3;
+                } else {
+                    console.log(curr_passenger.rowNo);
+                    curr_passenger.y=6;
+                }
+                curr_passenger.visible_text = 0;
             }
 
             //Before move
@@ -448,7 +523,7 @@ Template.boardingProcess.onRendered(function() {
             if(curr_passenger.wait_current>0){
                 curr_passenger.wait_current--;
             } else {
-                if(!adjacentCheck(i)) {
+                if( (!adjacentCheck(i))&&(curr_passenger.settled===0)) {
                     curr_passenger.wait_current = curr_passenger.wait_reset;
                     move(parseInt(curr_passenger.x)+1, parseInt(curr_passenger.y),i);
                 }
@@ -458,21 +533,24 @@ Template.boardingProcess.onRendered(function() {
             //After move: set for next iteration
 
 
+            //set to settling and increase wait time just once
+            if ((curr_passenger.x === parseInt(curr_passenger.seatNo))&&(curr_passenger.settling===0)) {
+                curr_passenger.settling = 1;
+                curr_passenger.wait_current = parseInt(curr_passenger.wait_current)+parseInt(curr_passenger.settlingTime);
+            }
+
             //if in front of dock at positon (1,0) after move, set visible
             if (curr_passenger.x===1) {
                 curr_passenger.visible = 1;
-            }
-            // else if(curr_passenger.x===curr_passenger.){
-						//
-            // }
-            //if passenger reached the end of the plane
-            //else if (curr_passenger.x===parseInt(passengerDock2.attr("x"))){
-            else if (curr_passenger.x===dock2_x){
+            } else if (curr_passenger.x===dock2_x) {
                 curr_passenger.visible = 0;
             }
+
+
+
+            //if passenger reached the end of the plane
+            //else if (curr_passenger.x===parseInt(passengerDock2.attr("x"))){
         }
-
-
         update();
     }
 
@@ -481,7 +559,7 @@ Template.boardingProcess.onRendered(function() {
         //if first element (passenger)
         if (i===0) {return false;}
         //objects are ordered in position ...5 4 3 2 1 0
-        return (data[i].x === (data[i-1].x-1));
+        return ((data[i].x === (data[i-1].x-1))&&(data[i].y === (data[i-1].y)));
     }
 
 //move to x,y coordinate by changing data: data
@@ -531,6 +609,7 @@ Template.boardingProcess.onRendered(function() {
 
             possibleSeats.splice( possibleSeats.indexOf(possibleSeats[temp_index]), 1 );
         }
+        console.log(passengerList);
         return passengerList;
     }
 
@@ -542,15 +621,27 @@ Template.boardingProcess.onRendered(function() {
         //traverse from top to bottom, passenger 0 to end
         for(var i=0;i<passengerData.length;i++){
             //passengers are cued from the -x to 0; 0 being the foremost passenger
+						// passengerData[i].walkingSpeed = passengerData[i].walkingSpeed * 100;
             passengerData[i].x = -i;
             passengerData[i].y = 0;
             passengerData[i].wait_current = 0;
             passengerData[i].wait_reset = 0;
             passengerData[i].visible = 0;
             passengerData[i].visible_text = 1;
-            passengerData[i].visible_info = 1;
             passengerData[i].settling = 0;
             passengerData[i].settled = 0;
+            passengerData[i].walkingSpeed = Math.round(passengerData[i].walkingSpeed);
+
+            var serialNo = passengerData[i].serialNo;
+
+            //parse seat and row numbers from serial number
+            for(let j=0;j<serialNo.length;j++) {
+                if (!Number.isInteger(parseInt(serialNo[j]))) {
+                    passengerData[i].seatNo = serialNo.substr(0, j);
+                    passengerData[i].rowNo = serialNo[j];
+                    break;
+                }
+            }
         }
         return passengerData;
     }
