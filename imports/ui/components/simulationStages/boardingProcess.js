@@ -35,20 +35,19 @@ Template.boardingProcess.onRendered(function() {
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
 
-    var num_passengers = 6*3;
-    var plane_capacity = num_passengers;
-    var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
+    //var num_passengers = 6*3;
+    //var plane_capacity = num_passengers;
+    //var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
 
-//var plane_capacity = appScopeVariable.planeCapacity.get();
-//var num_passengers = appScopeVariable.noOfPassengers.get();
-//var rawPassengerData = appScopeVariable.passengers.get();
+var num_passengers = appScopeVariable.noOfPassengers.get();
+var plane_capacity = appScopeVariable.planeCapacity.get();
+var rawPassengerData = appScopeVariable.passengers.get();
 
     var data = ParsePassengerData(rawPassengerData);
+    passengerWalkingSpeedScale();
     /*TODO:
 
     next:
-    game stop on 0 data; stop function call
-    settling time stall
     conflict on deeper seated
 
     extra:
@@ -363,7 +362,9 @@ Template.boardingProcess.onRendered(function() {
             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
-            .attr("wait_current",function(d){return d.wait_current;});
+            .attr("wait_current",function(d){return d.wait_current;})
+            .style("fill", function(d){ return d.settling===1 ? '#6bff80' : '#B8DEE6' });
+
 
         //object behaviour for when new data is added: enter, append, attributes
         circles.enter()
@@ -372,7 +373,7 @@ Template.boardingProcess.onRendered(function() {
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
             .attr("wait_current",function(d){return d.wait_current;})
-            .attr("fill", "#B8DEE6")
+            .style("fill", function(d){ return d.settling===1 ? '#6bff80' : '#B8DEE6' })
             .on("mouseover", function(d) {
                 d3.select(this).style("fill", "aliceblue");
                 hudText = hudGroup
@@ -386,14 +387,12 @@ Template.boardingProcess.onRendered(function() {
                     .attr("fill", "#718374");
             })
             .on("mouseout", function(){
-                d3.select(this).style("fill", "#B8DEE6");
+                d3.select(this).style("fill", function(d){ return d.settling===1 ? '#6bff80' : '#B8DEE6' });
                 hudText.remove();
             });
 
         //exit behaviour: remove circles that dont have corresponding data (filtered out in update)
         circles.exit().remove();
-
-
 
         //settled passengers
         //update text: select, data, attributes
@@ -448,6 +447,7 @@ Template.boardingProcess.onRendered(function() {
             .attr("font-size", scale/2+"px")
             .attr("fill", "red");
 
+
         //text behaviour for when new data is added: enter, append, attributes
         text.enter()
             .append("text")
@@ -459,8 +459,10 @@ Template.boardingProcess.onRendered(function() {
             .attr("font-size", scale/2+"px")
             .attr("fill", "red");
 
+
         //exit behaviour: remove text
         text.exit().remove();
+
     }
 
 //actions every game tick: data
@@ -486,7 +488,7 @@ Template.boardingProcess.onRendered(function() {
 
             //set visible and set real walking speed when in front of dock at pos (1,0)
             if(curr_passenger.x===0) {
-                curr_passenger.wait_reset = curr_passenger.walkingSpeed*10;
+                curr_passenger.wait_reset = curr_passenger.walkingSpeed;
             }
 
             if ((curr_passenger.settling === 1)&&(parseInt(curr_passenger.wait_current)===0)) {
@@ -605,6 +607,12 @@ Template.boardingProcess.onRendered(function() {
         return passengerList;
     }
 
+    function passengerWalkingSpeedScale(){
+        data.forEach(function(d) {
+            d.walkingSpeed = Math.floor(d.walkingSpeed*10);
+        });
+    }
+
 //add new properties to passenger data; x,y,wait_current,wait_reset: uses maxVisable
     function ParsePassengerData(passengerDataRaw) {
         var passengerData = passengerDataRaw;
@@ -622,7 +630,6 @@ Template.boardingProcess.onRendered(function() {
             passengerData[i].visible_text = 1;
             passengerData[i].settling = 0;
             passengerData[i].settled = 0;
-            passengerData[i].walkingSpeed = Math.round(passengerData[i].walkingSpeed);
 
             var serialNo = passengerData[i].serialNo;
 
