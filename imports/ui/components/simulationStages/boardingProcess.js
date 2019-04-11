@@ -39,8 +39,8 @@ Template.boardingProcess.onRendered(function() {
     //var plane_capacity = num_passengers;
     //var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
 
-var num_passengers = appScopeVariable.noOfPassengers.get();
 var plane_capacity = appScopeVariable.planeCapacity.get();
+var num_passengers = appScopeVariable.noOfPassengers.get();
 var rawPassengerData = appScopeVariable.passengers.get();
 
     var data = ParsePassengerData(rawPassengerData);
@@ -495,16 +495,32 @@ var rawPassengerData = appScopeVariable.passengers.get();
                 curr_passenger.settled = 1;
                 if(curr_passenger.rowNo==="A") {
                     curr_passenger.y = -3;
+                    if((ifSettledPassengerAt(curr_passenger.x,curr_passenger.y+1)||ifSettledPassengerAt(curr_passenger.x,curr_passenger.y+2))){
+                        curr_passenger.conflict = 1;
+                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                    }
                 } else if (curr_passenger.rowNo==="B") {
                     curr_passenger.y = -2;
+                    if(ifSettledPassengerAt(curr_passenger.x,curr_passenger.y+1)){
+                        curr_passenger.conflict = 1;
+                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                    }
                 } else if (curr_passenger.rowNo==="C") {
                     curr_passenger.y = -1;
                 } else if (curr_passenger.rowNo==="D") {
                     curr_passenger.y = 1;
                 } else if (curr_passenger.rowNo==="E") {
                     curr_passenger.y = 2;
+                    if(ifSettledPassengerAt(curr_passenger.x,curr_passenger.y-1)){
+                        curr_passenger.conflict = 1;
+                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                    }
                 } else if (curr_passenger.rowNo==="F") {
                     curr_passenger.y = 3;
+                    if((ifSettledPassengerAt(curr_passenger.x,curr_passenger.y-1)||ifSettledPassengerAt(curr_passenger.x,curr_passenger.y-2))){
+                        curr_passenger.conflict = 1;
+                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                    }
                 } else {
                     // console.log(curr_passenger.rowNo);
                     curr_passenger.y=6;
@@ -529,7 +545,7 @@ var rawPassengerData = appScopeVariable.passengers.get();
             //After move: set for next iteration
 
 
-            //when passenger is at assigned row. add time to settle on to wait time
+            //when passenger is at assigned row, add settling time on to wait time as the final countdown
             if ((curr_passenger.x === parseInt(curr_passenger.seatNo))&&(curr_passenger.settling===0)) {
                 curr_passenger.settling = 1;
                 curr_passenger.wait_current = parseInt(curr_passenger.wait_current)+parseInt(curr_passenger.settlingTime);
@@ -560,6 +576,17 @@ var rawPassengerData = appScopeVariable.passengers.get();
     function move(x,y,i) {
         data[i].x = x;
         data[i].y = y;
+    }
+
+    function ifSettledPassengerAt(x,y) {
+        var tempdata = data.filter(function(d) { return (parseInt(d.settled) === 1);});
+        var occupied = false;
+        for (let i=0; i<tempdata.length;i++){
+            if ((parseInt(tempdata[i].x)===x)&&(parseInt(tempdata[i].y)===y)){
+                occupied = true;
+            }
+        }
+        return occupied;
     }
 
 //min max function
@@ -630,6 +657,8 @@ var rawPassengerData = appScopeVariable.passengers.get();
             passengerData[i].visible_text = 1;
             passengerData[i].settling = 0;
             passengerData[i].settled = 0;
+            passengerData[i].conflict = 0;
+
 
             var serialNo = passengerData[i].serialNo;
 
