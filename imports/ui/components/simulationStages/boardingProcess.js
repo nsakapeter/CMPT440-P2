@@ -35,13 +35,20 @@ Template.boardingProcess.onRendered(function() {
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
 
-    //var num_passengers = 60;
-    //var plane_capacity = num_passengers;
-    //var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
+    var useReactiveVar = true;
+    var plane_capacity;
+    var num_passengers;
+    var rawPassengerData;
 
-var plane_capacity = appScopeVariable.planeCapacity.get();
-var num_passengers = appScopeVariable.noOfPassengers.get();
-var rawPassengerData = appScopeVariable.passengers.get();
+    if (useReactiveVar){
+        plane_capacity = appScopeVariable.planeCapacity.get();
+        num_passengers = appScopeVariable.noOfPassengers.get();
+        rawPassengerData = appScopeVariable.passengers.get();
+    } else {
+        num_passengers = 60;
+        plane_capacity = num_passengers;
+        rawPassengerData = samplePassengerData(num_passengers, plane_capacity);
+    }
 
     var data = ParsePassengerData(rawPassengerData);
     passengerWalkingSpeedScale();
@@ -49,11 +56,11 @@ var rawPassengerData = appScopeVariable.passengers.get();
     /*TODO:
 
     next:
-    color on conflict
     run experiment to skip, use while(), same condition for auto stop
 
     bugs:
     should need to filter out settled passengers before adjacent check
+    settled passenger HUD
     */
 
 //set up zoom
