@@ -29,15 +29,24 @@ Template.passengerGenerator.events({
 		//we can use these formulas because we are given the max and min speed for a range of ages
 		//our speed is in METRES PER SECOND, MILES PER HOUR is another option if needed
 
-
-
 		for (var i = 0; i < agesToSimulate.get().length; i++) {
+
+			// normal mu and normal sigma calculations for getting the normal distribution
+			// for settling speed
+			var maxSettling = parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)) + 3;
+			var minSettling = parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)) - 3;
+			var settlingMu = (maxSettling + minSettling) / 2;
+			var settlingSigma = (maxSettling - minSettling) / 4;
+			const normalSet = random.normal(settlingMu, settlingSigma);
+
 			var passenger = {
 					age: agesToSimulate.get()[i],
 					serialNo: (parseInt(i/6) + 1) + alphabets[i%6] + agesToSimulate.get()[i] + luggagesToSimulate.get()[i],
 					luggageWeight: luggagesToSimulate.get()[i],
-					settlingTime: parseInt((Math.log(Math.pow(5, luggagesToSimulate.get()[i])) + 3)), //algorithm => ln(5^x)+3
+					settlingTime: parseInt(normalSet()), //algorithm => ln(5^x)+3
 			}
+
+			// this code adds a 0 in front of single digit numbers
 			if ((parseInt(i/6) + 1 ) < 10 ) {
 				passenger.seatNo = "0" + (parseInt(i/6) + 1) + alphabets[i%6];
 			}
@@ -45,6 +54,9 @@ Template.passengerGenerator.events({
 				passenger.seatNo = (parseInt(i/6) + 1) + alphabets[i%6];
 			}
 
+			// this code divides the number of passengers we have by 4
+			// and then assigns a zone to passenger
+			// the first quarter of passengrs are zone 1, the second quarter zone 2 and so on
 			var firstZone = parseInt(agesToSimulate.get().length/4); //if in first quarter
 			var secondZone = parseInt(agesToSimulate.get().length/2); //if in second quarter
 			var thirdZone = firstZone + secondZone; 									//if in third quarter
@@ -60,6 +72,9 @@ Template.passengerGenerator.events({
 				passenger.zoneNo = 3;
 			} else passenger.zoneNo = 4;
 
+
+			// these if statements below check to see what age range the passenger is in
+			// then we create a normal distribution for the walking speed based on the max and min speed
 			if(agesToSimulate.get()[i] > 17 && agesToSimulate.get()[i] < 30) //speed for age range from 18 to 29
 			{
 				var maxSpeed = 1.36;
@@ -148,29 +163,32 @@ Template.passengerGenerator.events({
 		appScopeVariable.passengers.set(passengerList);
 		instance.passengers.set(passengerList);
 	},
-	// 'change .sortDirectionDropdown'(event, instance) {
-	// 	event.preventDefault();
-	// 	event.stopPropagation();
-	// 	var passengerList = instance.passengers.get(passengerList);
-	// 	switch ($(event.target).val()) {
-	// 		case "age":
-	// 			passengerList.sort(compareAge);
-	// 			break;
-	// 		case "lw":
-	// 			passengerList.sort(compareLuggageWeight);
-	// 			break;
-	// 		case "row":
-	// 			passengerList.sort(compareRow);
-	// 			break;
-	// 		case "zone":
-	// 			break;
-	// 		case "wilma":
-	// 			break;
-	// 		default:
-	// 			break;
-	// 	}
-	// 	instance.sortDirectionDropdown.set(passengerList);
-	// }
+	// allows us to sort our passengers in descending order
+	'change .sortDirectionDropdown'(event, instance) {
+		event.preventDefault();
+		event.stopPropagation();
+		var passengerList = instance.passengers.get(passengerList);
+		switch ($(event.target).val()) {
+			case "age":
+				passengerList.sort(compareAge);
+				break;
+			case "lw":
+				passengerList.sort(compareLuggageWeight);
+				break;
+			case "row":
+				passengerList.sort(compareRow);
+				break;
+			case "zone":
+				passengerList.sort(compareZone);
+				break;
+			case "wilma":
+				passengerList.sortByWilma(passengerList);
+				break;
+			default:
+				break;
+		}
+		instance.passengers.set(passengerList.reverse());
+	}
 });
 
 Template.passengerGenerator.onCreated(function() {
@@ -206,8 +224,8 @@ function compareAge(a, b) {
 
 function compareLuggageWeight(a, b) {
   // Use toUpperCase() to ignore character casing
-	const luggageWeightA = a.luggageWeight;
-  const luggageWeightB = b.luggageWeight;
+	const luggageWeightA = parseFloat(a.luggageWeight);
+  const luggageWeightB = parseFloat(b.luggageWeight);
   let comparison = 0;
   if (luggageWeightA > luggageWeightB) {
     comparison = 1;
