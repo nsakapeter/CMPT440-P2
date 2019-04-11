@@ -55,7 +55,6 @@ Template.boardingProcess.onRendered(function() {
     animations - may not need since fast game tick
     color on settling
     color on conflict
-    color on settled
 
     bugs:
     need to filter out settled passengers before adjacent check
@@ -161,16 +160,20 @@ Template.boardingProcess.onRendered(function() {
 
         //passenger text toggle
         d3.select("#passenger_text-btn").on("click", function(e) {
-            if(parseInt(data[0].visible_text) === 0) {
-                data.forEach(function(d) {
+            var tempdata = data.filter(function(d) { return (parseInt(d.settled) === 0); });
+            if (tempdata.length===0) {return;}
+
+            if(parseInt(tempdata[0].visible_text) === 0) {
+                tempdata.forEach(function(d) {
                     d.visible_text = 1;
                 });
 
             } else {
-                data.forEach(function(d) {
+                tempdata.forEach(function(d) {
                     d.visible_text = 0;
                 });
             }
+
             update();
         });
 
@@ -351,9 +354,6 @@ Template.boardingProcess.onRendered(function() {
 
 //update objects: data
     function update() {
-        //.transition().ease(d3.easeBounce).duration(1000)
-        /* circleGroup.selectAll("circle").transition().duration(1000).ease(d3.easeElastic)
-             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"))-1;})*/
 
         //in queue passengers
         //update circles: select, data, attributes
@@ -364,7 +364,6 @@ Template.boardingProcess.onRendered(function() {
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
             .attr("r", scale/2)
             .attr("wait_current",function(d){return d.wait_current;});
-
 
         //object behaviour for when new data is added: enter, append, attributes
         circles.enter()
@@ -395,6 +394,7 @@ Template.boardingProcess.onRendered(function() {
         circles.exit().remove();
 
 
+
         //settled passengers
         //update text: select, data, attributes
         var circle2 = planeGroup.selectAll("circle")
@@ -409,7 +409,7 @@ Template.boardingProcess.onRendered(function() {
             .append("circle")
             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
-            .attr("r", scale/2)
+            .attr("r", scale/3)
             .attr("wait_current",function(d){return d.wait_current;})
             .attr("fill", "#E0995E");
 
@@ -431,10 +431,12 @@ Template.boardingProcess.onRendered(function() {
                 hudText.remove();
             });
 
-
         //exit behaviour: remove text
         circle2.exit().remove();
 
+
+
+        //passenger text
         //update text: select, data, attributes
         var text = circleGroup.selectAll("text")
             .data(data.filter(function(d) { return ((parseInt(d.visible) === 1) && (parseInt(d.visible_text) === 1)); }))
