@@ -35,7 +35,7 @@ Template.boardingProcess.onRendered(function() {
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
 
-    //var num_passengers = 6*3;
+    //var num_passengers = 60;
     //var plane_capacity = num_passengers;
     //var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
 
@@ -45,27 +45,15 @@ var rawPassengerData = appScopeVariable.passengers.get();
 
     var data = ParsePassengerData(rawPassengerData);
     passengerWalkingSpeedScale();
+
     /*TODO:
 
     next:
-    conflict on deeper seated
-
-    extra:
-    animations - may not need since fast game tick
-    color on settling
     color on conflict
+    run experiment to skip, use while(), same condition for auto stop
 
     bugs:
-    need to filter out settled passengers before adjacent check
-    invisible passengers (past dock) is still checked to see if move
-    bug should never happen because passenger at end of plane shouldnt be looking to advance but to go in seat
-
-
-
-    next:
-    run experiment to skip, use while()
-    walking speed scaled down
-
+    should need to filter out settled passengers before adjacent check
     */
 
 //set up zoom
@@ -346,11 +334,6 @@ var rawPassengerData = appScopeVariable.passengers.get();
         }
     }
 
-// Define the div for the tooltip
-    var div = svg.append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
 //update objects: data
     function update() {
 
@@ -384,6 +367,7 @@ var rawPassengerData = appScopeVariable.passengers.get();
                     .text(d.serialNo)
                     .attr("font-family", "sans-serif")
                     .attr("font-size", scale/2+"px")
+                    .attr("stroke", "aliceblue")
                     .attr("fill", "#718374");
             })
             .on("mouseout", function(){
@@ -399,6 +383,7 @@ var rawPassengerData = appScopeVariable.passengers.get();
         var circle2 = planeGroup.selectAll("circle")
             .data(data.filter(function(d) { return (parseInt(d.settled) === 1); }))
             .attr("serialNo",function(d){return d.serialNo;})
+            .style("fill", function(d){ return d.conflict===1 ? '#ff5456' : '#E0995E' })
             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));});
         //.attr("fill", "#E0995E");
@@ -408,9 +393,10 @@ var rawPassengerData = appScopeVariable.passengers.get();
             .append("circle")
             .attr("cx", function(d){return (d.x * scale) + parseInt(circleGroup.attr("x"));})
             .attr("cy", function(d){return (-d.y * scale) + parseInt(circleGroup.attr("y"));})
-            .attr("r", scale/3)
+            .attr("r", Math.floor(scale/3))
             .attr("wait_current",function(d){return d.wait_current;})
-            .attr("fill", "#E0995E");
+            .style("fill", function(d){ return d.conflict===1 ? '#ff5456' : '#E0995E' });
+        //.attr("fill", "#E0995E");
 
 
         circle2.on("mouseenter", function(d) {
@@ -613,8 +599,9 @@ var rawPassengerData = appScopeVariable.passengers.get();
 
         //generate list of possible seat numbers
         for (let i=0;i<capacity;i++){
-            possibleSeats.push((Math.floor((i/6)%6)+1)+seatLetter[i%seatLetter.length]);
+            possibleSeats.push((Math.floor(i/6)+1)+seatLetter[i%seatLetter.length]);
         }
+
 
         //randomly assign seat numbers to passengers, delete each seat assigned
         for (let i=0;i<n;i++){
