@@ -50,6 +50,7 @@ Template.boardingProcess.onRendered(function() {
         rawPassengerData = samplePassengerData(num_passengers, plane_capacity);
     }
 
+    console.log(rawPassengerData);
     var data = ParsePassengerData(rawPassengerData);
     passengerWalkingSpeedScale();
 
@@ -616,7 +617,7 @@ Template.boardingProcess.onRendered(function() {
             passengerList.push({
                 age: rando(18, 70),
                 luggageWeight: rando(1, 40),
-                walkingSpeed: rando(1, 9) / 10,
+                walkingSpeed: rando(100, 150)/100,
                 settlingTime: rando(1, 5),
             });
 
@@ -628,9 +629,11 @@ Template.boardingProcess.onRendered(function() {
         return passengerList;
     }
 
+//walking speed is inversley proportional to wait time.
     function passengerWalkingSpeedScale(){
         data.forEach(function(d) {
-            d.walkingSpeed = Math.floor(d.walkingSpeed*10);
+            //d.walkingSpeed = Math.floor(d.walkingSpeed*10);
+            d.walkingSpeed = Math.floor(1/Math.pow(9,d.walkingSpeed)*100)+1;
         });
     }
 
@@ -652,7 +655,6 @@ Template.boardingProcess.onRendered(function() {
             passengerData[i].settling = 0;
             passengerData[i].settled = 0;
             passengerData[i].conflict = 0;
-
 
             var serialNo = passengerData[i].serialNo;
 
