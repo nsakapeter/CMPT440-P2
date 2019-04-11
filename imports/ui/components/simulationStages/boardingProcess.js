@@ -29,33 +29,27 @@ Template.boardingProcess.onRendered(function() {
 
     width = document.body.clientWidth;
     var board_x = Math.round(document.body.clientWidth/2-(document.body.clientWidth/3)+100);
-    //var board_y = Math.round(document.body.clientHeight/2);
+//var board_y = Math.round(document.body.clientHeight/2);
     var board_y = Math.round(Math.max( window.innerHeight, document.body.clientHeight )/2);
     var countdown;
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
 
-    //var num_passengers = 36;
-    //var plane_capacity = num_passengers;
-    //var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
+    var num_passengers = 6*3;
+    var plane_capacity = num_passengers;
+    var rawPassengerData = samplePassengerData(num_passengers,plane_capacity);
 
-    var plane_capacity = appScopeVariable.planeCapacity.get();
-    var num_passengers = appScopeVariable.noOfPassengers.get();
-    var rawPassengerData = appScopeVariable.passengers.get();
-
+//var plane_capacity = appScopeVariable.planeCapacity.get();
+//var num_passengers = appScopeVariable.noOfPassengers.get();
+//var rawPassengerData = appScopeVariable.passengers.get();
 
     var data = ParsePassengerData(rawPassengerData);
     /*TODO:
 
     next:
     game stop on 0 data; stop function call
-    design chairs and put on grid dynamically - each game length spawns 6 chairs
     settling time stall
-    exit on seat number match
     conflict on deeper seated
-
-    gamepanel:
-    reset button
 
     extra:
     animations - may not need since fast game tick
@@ -75,7 +69,6 @@ Template.boardingProcess.onRendered(function() {
     walking speed scaled down
 
     */
-
 
 //set up zoom
     zoom_var = 1;
@@ -199,6 +192,7 @@ Template.boardingProcess.onRendered(function() {
 
             //update panel
             d3.select("#time-btn-value").html(0);
+            d3.select("#hidden-time-btn-value").html(0);
             d3.select("#conflicts-btn-value").html(0);
 
             //play/pause button update
@@ -252,7 +246,6 @@ Template.boardingProcess.onRendered(function() {
         .attr("width", dock_scale)
         .attr("height", dock_scale)
         .style("fill", "#ffc205");
-
 
 //end port for passengers:
     var dock2_x = (plane_capacity/6) + 1;
@@ -313,7 +306,7 @@ Template.boardingProcess.onRendered(function() {
     }
 
 
-
+//make chairs
     for (var i = 1; i < 4; i++) {
         for (var j = 1; j <= (plane_capacity / 6); j++) {
             chairAt(j,i);
@@ -334,14 +327,10 @@ Template.boardingProcess.onRendered(function() {
 
 
 
-
-
-
+//tooltip
     var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
-
-
 
 
 // -------------------- Functions
@@ -446,7 +435,6 @@ Template.boardingProcess.onRendered(function() {
         //exit behaviour: remove text
         circle2.exit().remove();
 
-
         //update text: select, data, attributes
         var text = circleGroup.selectAll("text")
             .data(data.filter(function(d) { return ((parseInt(d.visible) === 1) && (parseInt(d.visible_text) === 1)); }))
@@ -475,8 +463,13 @@ Template.boardingProcess.onRendered(function() {
 
 //actions every game tick: data
     function countDown() {
-        //set countdown to ++
 
+        //end of simulation: all passengers are visible and settled. click pause and stop interval
+        if((data.filter(function(d) { return ((parseInt(d.visible) === 0) || (parseInt(d.settled) === 0)); })).length===0){
+            d3.select('#pause-play-btn').dispatch('click');
+            clearInterval(countdown);
+        }
+        //set countdown to ++
         d3.select("#hidden-time-btn-value").html(parseInt(d3.select("#hidden-time-btn-value").html())+1);
         //convert time to mins and seconds
         var currentTime = parseInt(d3.select("#hidden-time-btn-value").html());
@@ -496,7 +489,6 @@ Template.boardingProcess.onRendered(function() {
 
             if ((curr_passenger.settling === 1)&&(parseInt(curr_passenger.wait_current)===0)) {
                 curr_passenger.settled = 1;
-                console.log("row:"+curr_passenger.rowNo+", seatNo:"+curr_passenger.seatNo+", ticket:"+curr_passenger.serialNo);
                 if(curr_passenger.rowNo==="A") {
                     curr_passenger.y = -3;
                 } else if (curr_passenger.rowNo==="B") {
@@ -510,7 +502,7 @@ Template.boardingProcess.onRendered(function() {
                 } else if (curr_passenger.rowNo==="F") {
                     curr_passenger.y = 3;
                 } else {
-                    console.log(curr_passenger.rowNo);
+                    // console.log(curr_passenger.rowNo);
                     curr_passenger.y=6;
                 }
                 curr_passenger.visible_text = 0;
@@ -533,7 +525,7 @@ Template.boardingProcess.onRendered(function() {
             //After move: set for next iteration
 
 
-            //set to settling and increase wait time just once
+            //when passenger is at assigned row. add time to settle on to wait time
             if ((curr_passenger.x === parseInt(curr_passenger.seatNo))&&(curr_passenger.settling===0)) {
                 curr_passenger.settling = 1;
                 curr_passenger.wait_current = parseInt(curr_passenger.wait_current)+parseInt(curr_passenger.settlingTime);
@@ -545,8 +537,6 @@ Template.boardingProcess.onRendered(function() {
             } else if (curr_passenger.x===dock2_x) {
                 curr_passenger.visible = 0;
             }
-
-
 
             //if passenger reached the end of the plane
             //else if (curr_passenger.x===parseInt(passengerDock2.attr("x"))){
@@ -609,7 +599,7 @@ Template.boardingProcess.onRendered(function() {
 
             possibleSeats.splice( possibleSeats.indexOf(possibleSeats[temp_index]), 1 );
         }
-        console.log(passengerList);
+        //console.log(passengerList);
         return passengerList;
     }
 
@@ -621,7 +611,7 @@ Template.boardingProcess.onRendered(function() {
         //traverse from top to bottom, passenger 0 to end
         for(var i=0;i<passengerData.length;i++){
             //passengers are cued from the -x to 0; 0 being the foremost passenger
-						// passengerData[i].walkingSpeed = passengerData[i].walkingSpeed * 100;
+            // passengerData[i].walkingSpeed = passengerData[i].walkingSpeed * 100;
             passengerData[i].x = -i;
             passengerData[i].y = 0;
             passengerData[i].wait_current = 0;
