@@ -153,7 +153,7 @@ Template.passengerGenerator.events({
 				passengerList.sort(compareZone);
 				appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
 				break;
-			case "wilma-a":
+			case "wilma":
 				passengerList = sortByWilma(passengerList);
 				appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
 				break;
@@ -173,7 +173,7 @@ Template.passengerGenerator.events({
 			passengerList.sort(compareZone).reverse();
 			appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
 				break;
-			case "wilma-d":
+			case "amwi":
 			passengerList = sortByWilma(passengerList).reverse();
 			appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
 				break;

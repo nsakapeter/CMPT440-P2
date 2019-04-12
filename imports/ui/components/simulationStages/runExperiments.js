@@ -74,7 +74,7 @@ function runExperiments(file){
           var trialResult = [];
           for (var i = 0; i < json.experimentialData.noOfTrails; i++) {
             var passengers = generatePassengers(json.simulationData.minAges, json.simulationData.maxAges, json.simulationData.minLuggaegeWeight, json.simulationData.maxLuggaegeWeight, json.simulationData.noOfPassengers, json.simulationData.ageDistributionType,json.simulationData.LuggageWeightDistributionType);
-            console.log(passengers);
+            // console.log(passengers);
             console.log(i);
             for (var j = 0; j < json.experimentialData.algorithms.length; j++) {
               var currentAlgorithm = json.experimentialData.algorithms[j];
@@ -92,7 +92,7 @@ function runExperiments(file){
             reactiveTrialResults.set(trialResult);
             // resultsToGraph.push(trialResult);
           }
-          console.log(trialResult);
+          // console.log(trialResult);
           runningExperiment.set(false);
           setTimeout(function(){ graph(trialResult, json.experimentialData.algorithms) }, 3000);
 

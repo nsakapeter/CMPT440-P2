@@ -12,7 +12,7 @@ export function passengerSorter(passengerList, algorithm) {
     case "zone-a":
       passengerList.sort(compareZone);
       break;
-    case "wilma-a":
+    case "wilma":
       passengerList = sortByWilma(passengerList);
       break;
     case "age-d":
@@ -27,7 +27,7 @@ export function passengerSorter(passengerList, algorithm) {
     case "zone-d":
     passengerList.sort(compareZone).reverse();
       break;
-    case "wilma-d":
+    case "amwi":
     passengerList = sortByWilma(passengerList).reverse();
       break;
     case "random":

@@ -7,11 +7,11 @@ export function simulateExperiment(rawPassengerData,num_passengers,plane_capacit
       var currentTime;
 
 
-      console.log("Mutating");
-      console.log(rawPassengerData);
+      // console.log("Mutating");
+      // console.log(rawPassengerData);
       var data = ParsePassengerData(rawPassengerData);
-      console.log("Mutated");
-      console.log(rawPassengerData);
+      // console.log("Mutated");
+      // console.log(rawPassengerData);
       passengerWalkingSpeedScale();
 
   //Run Experiment till completion and return results
