@@ -137,24 +137,44 @@ Template.passengerGenerator.events({
 		event.stopPropagation();
 		var passengerList = instance.passengers.get(passengerList);
 		switch ($(event.target).val()) {
-			case "age":
+			case "age-a":
 				passengerList.sort(compareAge);
 				appScopeVariable.currentlySimulatedProcess.set("By Age " + $(".sortDirectionDropdown").val());
 				break;
-			case "lw":
+			case "lw-a":
 				passengerList.sort(compareLuggageWeight);
 				appScopeVariable.currentlySimulatedProcess.set("By Luggae Weight " + $(".sortDirectionDropdown").val());
 				break;
-			case "row":
+			case "row-a":
 				passengerList.sort(compareRow);
 				appScopeVariable.currentlySimulatedProcess.set("By row " + $(".sortDirectionDropdown").val());
 				break;
-			case "zone":
-			passengerList.sort(compareZone);
+			case "zone-a":
+				passengerList.sort(compareZone);
+				appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
+				break;
+			case "wilma-a":
+				passengerList = sortByWilma(passengerList);
+				appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
+				break;
+			case "age-d":
+				passengerList.sort(compareAge).reverse();
+				appScopeVariable.currentlySimulatedProcess.set("By Age " + $(".sortDirectionDropdown").val());
+				break;
+			case "lw-d":
+				passengerList.sort(compareLuggageWeight).reverse();
+				appScopeVariable.currentlySimulatedProcess.set("By Luggae Weight " + $(".sortDirectionDropdown").val());
+				break;
+			case "row-d":
+				passengerList.sort(compareRow).reverse();
+				appScopeVariable.currentlySimulatedProcess.set("By row " + $(".sortDirectionDropdown").val());
+				break;
+			case "zone-d":
+			passengerList.sort(compareZone).reverse();
 			appScopeVariable.currentlySimulatedProcess.set("By zone " + $(".sortDirectionDropdown").val());
 				break;
-			case "wilma":
-			passengerList = sortByWilma(passengerList);
+			case "wilma-d":
+			passengerList = sortByWilma(passengerList).reverse();
 			appScopeVariable.currentlySimulatedProcess.set("By wilma " + $(".sortDirectionDropdown").val());
 				break;
 			case "random":
@@ -168,34 +188,34 @@ Template.passengerGenerator.events({
 		instance.passengers.set(passengerList);
 	},
 	// allows us to sort our passengers in descending order
-	'change .sortDirectionDropdown'(event, instance) {
-		event.preventDefault();
-		event.stopPropagation();
-		var passengerList = instance.passengers.get(passengerList);
-		switch ($(event.target).val()) {
-			case "age":
-				passengerList.sort(compareAge);
-				break;
-			case "lw":
-				passengerList.sort(compareLuggageWeight);
-				break;
-			case "row":
-				passengerList.sort(compareRow);
-				break;
-			case "zone":
-				passengerList.sort(compareZone);
-				break;
-			case "wilma":
-				passengerList.sortByWilma(passengerList);
-				break;
-			case "random":
-				passengerList = sortbyRandom(passengerList);
-				break;
-			default:
-				break;
-		}
-		instance.passengers.set(passengerList.reverse());
-	}
+	// 'change .sortDirectionDropdown'(event, instance) {
+	// 	event.preventDefault();
+	// 	event.stopPropagation();
+	// 	var passengerList = instance.passengers.get(passengerList);
+	// 	switch ($(event.target).val()) {
+	// 		case "age":
+	// 			passengerList.sort(compareAge);
+	// 			break;
+	// 		case "lw":
+	// 			passengerList.sort(compareLuggageWeight);
+	// 			break;
+	// 		case "row":
+	// 			passengerList.sort(compareRow);
+	// 			break;
+	// 		case "zone":
+	// 			passengerList.sort(compareZone);
+	// 			break;
+	// 		case "wilma":
+	// 			passengerList.sortByWilma(passengerList);
+	// 			break;
+	// 		case "random":
+	// 			passengerList = sortbyRandom(passengerList);
+	// 			break;
+	// 		default:
+	// 			break;
+	// 	}
+	// 	instance.passengers.set(passengerList.reverse());
+	// }
 });
 
 Template.passengerGenerator.onCreated(function() {
