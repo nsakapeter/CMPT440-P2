@@ -163,26 +163,33 @@ function graph(resultsToGraph, algorithms){
 
 
 
-    // const ConflictValues = Array.from(resultsToGraph, x => x.conflicts);
-    // var ConflictTrace = {
-    //   x: ProcessNames,
-    //   y: ConflictValues,
-    //   type: 'bar'
-    // };
-    // var ConflictData = [ConflictTrace];
-    // var ConflictLayout = {
-    //   xaxis: {
-    //     title: {
-    //       text: 'Process Type'
-    //     },
-    //   },
-    //   yaxis: {
-    //     title: {
-    //       text: '# of Conflicts'
-    //     }
-    //   }
-    // };
+    var BoardingLayout = {
+      xaxis: {
+        title: {
+          text: 'Process Type'
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'Boarding Time'
+        }
+      }
+    };
 
-    Plotly.newPlot("chart1", BoardingTimeData, {displaylogo: false});
-    Plotly.newPlot("chart2", BoardingConflictData, {displaylogo: false});
+
+    var ConflictLayout = {
+      xaxis: {
+        title: {
+          text: 'Process Type'
+        },
+      },
+      yaxis: {
+        title: {
+          text: '# of Conflicts'
+        }
+      }
+    };
+
+    Plotly.newPlot("chart1", BoardingTimeData, BoardingLayout, {displaylogo: false});
+    Plotly.newPlot("chart2", BoardingConflictData, ConflictLayout, {displaylogo: false});
 }
