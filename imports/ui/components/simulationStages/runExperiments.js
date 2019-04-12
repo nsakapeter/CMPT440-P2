@@ -20,9 +20,15 @@ Template.runExperiments.helpers({
 });
 
 Template.runExperiments.events({
-  'click .generateGraphs'(event, instance) {
-    // event.preventDefault();
-    // event.stopPropagation();
+  'change .configFileInput'(e, instance) {
+    event.preventDefault();
+    event.stopPropagation();
+    var fileName = e.target.files[0].name;
+     runningExperiment.set(true);
+    setTimeout(function(){
+      runExperiments(e.target.files[0]);
+    }, 1000);
+
 
   }
 });
@@ -34,20 +40,15 @@ Template.runExperiments.onCreated(function() {
 
 Template.runExperiments.onRendered(function() {
   var self = this;
-  $(document).ready(function(){
-    $('input[type=file]').click(function(e){
-        $('input[type="file"]').attr("value", "");
-    });
-     $('input[type="file"]').change(function(e){
-         var fileName = e.target.files[0].name;
-          runningExperiment.set(true);
-         setTimeout(function(){
-           runExperiments(e.target.files[0]);
-         }, 1000);
-
-
-     });
- });
+ //  $(document).ready(function(){
+ //    $('input[type=file]').click(function(e){
+ //        $('input[type="file"]').attr("value", "");
+ //    });
+ //     $('input[type="file"]').change(function(e){
+ //
+ //
+ //     });
+ // });
 
 });
 
