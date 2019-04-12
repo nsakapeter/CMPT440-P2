@@ -32,7 +32,7 @@ export function generateAges(minAges, maxAges, noOfPassengers, ageDistributionTy
     // var numPassengers = self.data.passengers;
     for (var i = 0; i < noOfPassengers; i++) {
       var newValue = rand();
-      while ((newValue < 18) || (newValue > 78)) {
+      while ((newValue < parseInt(minAges)) || (newValue > parseInt(maxAges))) {
         newValue = rand();
       }
       ages.push(Math.round(newValue));
@@ -76,7 +76,7 @@ export function generateWeights(minLuggaegeWeight, maxLuggaegeWeight, noOfPassen
   // var numPassengers = self.data.passengers;
   for (var i = 0; i < noOfPassengers; i++) {
     var newValue = rand();
-    while ((newValue < 1) || (newValue > 15)) {
+    while ((newValue < parseFloat(minLuggaegeWeight)) || (newValue > parseFloat(maxLuggaegeWeight))) {
       newValue = rand();
     }
     weights.push(Math.round(newValue));
