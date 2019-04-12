@@ -1,3 +1,7 @@
+import 'runExperiments/dataGenerator.js';
+import 'runExperiments/passengerGenerator.js';
+import 'runExperiments/passengerSorter.js';
+import 'runExperiments/simulateExperiment.js';
 
 if(Meteor.isClient){
 
@@ -45,13 +49,17 @@ function runExperiments(file){
           console.log(json);
           for (var i = 0; i < json.experimentialData.noOfTrails; i++) {
             console.log(i);
-            var passengers = generatePassengers();
-            var trialResult = {};
+            var passengers = generatePassengers(json.experimentialData.minAges, json.experimentialData.maxAges, json.experimentialData.minLuggaegeWeight, json.experimentialData.maxLuggaegeWeight, json.experimentialData.noOfPassengers, json.experimentialData.ageDistributionType,json.experimentialData.LuggageWeightDistributionType);
+            var trialResult = [];
             for (var j = 0; j < json.experimentialData.algorithms.length; j++) {
               var currentAlgorithm = json.experimentialData.algorithms[j];
               var sortPassengers = sortPassengers(passengers, currentAlgorithm);
-              var simulationResult = simulate(sortPassengers);
-              trialResult[currentAlgorithm] = simulationResult;
+              var simulationResult = simulate(sortPassengers, json.experimentialData.planeCapacity, json.experimentialData.noOfPassengers);
+              trialResult.push({
+                "name": currentAlgorithm,
+                "boardingTime": simulationResult[0],
+                "conflicts": simulationResult[1]
+              });
             }
             resultsToGraph.push(trialResult);
           }
@@ -67,24 +75,26 @@ function runExperiments(file){
 }
 
 function generatePassengers(minAges, maxAges, minLuggaegeWeight, maxLuggaegeWeight, noOfPassengers, ageDistributionType, LuggageWeightDistributionType){
-
+    var ages = generateAges(minAges, maxAges, noOfPassengers, ageDistributionType);
+    var luggageWeights = generateWeights(minLuggaegeWeight, maxLuggaegeWeight, noOfPassengers, LuggageWeightDistributionType);
+    return passengerGenerator(ages, luggageWeights);
 }
 
 
-function sortPassengers(){
-
+function sortPassengers(passengerList, algorithm){
+  return passengerSorter(passengerList, algorithm);
 }
 
 
-function simulate(passengers){
-
+function simulate(passengerList,noOfPassengers,planeCapacity){
+  return simulateExperiment(passengerList,noOfPassengers,planeCapacity)
 }
 
 
 function graph(resultsToGraph){
-    const BoardingTimeValues = Array.from(appScopeVariable.results.get(), x => x.boardingTime);
+    const BoardingTimeValues = Array.from(resultsToGraph, x => x.boardingTime);
     console.log(BoardingTimeValues);
-    const ProcessNames = Array.from(appScopeVariable.results.get(), x => x.name);
+    const ProcessNames = Array.from(resultsToGraph, x => x.name);
     var BoardingTimeTrace = {
       x: ProcessNames,
       y: BoardingTimeValues,
@@ -105,7 +115,7 @@ function graph(resultsToGraph){
     };
 
 
-    const ConflictValues = Array.from(appScopeVariable.results.get(), x => x.conflicts);
+    const ConflictValues = Array.from(resultsToGraph, x => x.conflicts);
     var ConflictTrace = {
       x: ProcessNames,
       y: ConflictValues,
