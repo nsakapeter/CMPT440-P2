@@ -1,68 +1,82 @@
 <template name="runExperiments">
+
+  {{#if isRunningExperiment}}
+      <div class="row h-100 d-flex flex-row align-items-center justify-content-center" >
+        <div class="col-md-12 d-flex flex-row align-items-center justify-content-center">
+          <img src="/img/flight.gif" width="600px" height="500px">
+        </div>
+      </div>
+  {{else}}
+
   <div class="row h-100 d-flex flex-row align-items-center mb-5" >
     <div class="col-md-8">
       <h6 class="element-header">
         Upload Experiment Config File
       </h6>
-    </div>
-    <div class="col-md-4">
       <form action="javascript:void(0);">
         <input type="file" name="pic">
         <!-- <button class="btn btn-primary m-auto btn-small uploadExperiment" type="submit"> Upload Experiment</button> -->
       </form>
     </div>
-  </div>
-  <div class="row h-100 d-flex flex-row align-items-center" >
     <div class="col-md-4">
-      <div class="element-wrapper">
-        <h6 class="element-header">
-          Compare Boarding Methods
-        </h6>
-        <div class="element-box pl-0" style="max-height: calc(100vh - 400px); overflow: scroll;">
-          <table class="table table-lightborder">
-            <thead>
-              <tr>
-                <th>
-                  Boarding Method
-                </th>
-                <th>
-                  Boarding Time
-                </th>
-                <th>
-                  # Of Conflicts
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each results}}
-                <tr>
-                  <td>
-                    {{trailName}}
-                  </td>
-                  <td>
-                    {{boardingTime}}
-                  </td>
-                  <td>
-                    {{conflicts}}
-                  </td>
-                </tr>
-              {{/each}}
-            </tbody>
-          </table>
+
+    </div>
+  </div>
+
+    <div class="row h-100 d-flex flex-row align-items-center">
+      <div class="col-md-4">
+        {{#if results}}
+          <div class="element-wrapper">
+            <h6 class="element-header">
+              Compare Boarding Methods
+            </h6>
+            <div class="element-box pl-0" style="max-height: calc(100vh - 400px); overflow: scroll;">
+              <table class="table table-lightborder">
+                <thead>
+                  <tr>
+                    <th>
+                      Boarding Method
+                    </th>
+                    <th>
+                      Boarding Time
+                    </th>
+                    <th>
+                      # Of Conflicts
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each results}}
+                    <tr>
+                      <td>
+                        {{trailName}}
+                      </td>
+                      <td>
+                        {{boardingTime}}
+                      </td>
+                      <td>
+                        {{conflicts}}
+                      </td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {{/if}}
+      </div>
+      <div class="col-md-4">
+        <div id="chart1" class="mt-5">
+
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div id="chart2" class="mt-5">
+
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div id="chart1" class="mt-5">
-
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div id="chart2" class="mt-5">
-
-      </div>
-    </div>
-  </div>
+  {{/if}}
 
 
 </template>

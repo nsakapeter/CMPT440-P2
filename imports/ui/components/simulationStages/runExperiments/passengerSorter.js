@@ -15,6 +15,9 @@ export function passengerSorter(passengerList, algorithm) {
     case "wilma":
     passengerList = sortByWilma(passengerList);
       break;
+    case "random":
+      passengerList = sortbyRandom(passengerList);
+      break;
     default:
       break;
   }
@@ -84,4 +87,22 @@ function sortByWilma(passengerList) {
 		}
 	}
 	return sortedByWilma;
+}
+
+
+function sortbyRandom(passengerList)
+{
+	var ctr = passengerList.length, temp, index;
+	// While there are elements in the array
+	while (ctr > 0) {
+		// Pick a random index
+	 	index = Math.floor(Math.random() * ctr);
+		// Decrease ctr by 1
+	  ctr--;
+		// And swap the last element with it
+	  temp = passengerList[ctr];
+	  passengerList[ctr] = passengerList[index];
+	  passengerList[index] = temp;
+	}
+	return passengerList;
 }
