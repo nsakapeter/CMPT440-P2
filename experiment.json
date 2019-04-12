@@ -1,0 +1,16 @@
+{
+    "simulationData":{
+      "minAges": "18",
+      "maxAges": "64",
+      "minLuggaegeWeight": "1",
+      "maxLuggaegeWeight": "15",
+      "planeCapacity" : "66",
+      "noOfPassengers" : "56",
+      "ageDistributionType" : "normal",
+      "LuggageWeightDistributionType" : "normal"
+    },
+    "experimentialData": {
+        "noOfTrails": 35,
+        "algorithms": ["age","lw","row","zone"]
+    }
+}
