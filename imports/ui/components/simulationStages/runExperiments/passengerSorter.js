@@ -1,4 +1,4 @@
-function passengerSorter(passengerList, algorithm) {
+export function passengerSorter(passengerList, algorithm) {
   switch (algorithm) {
     case "age":
       passengerList.sort(compareAge);

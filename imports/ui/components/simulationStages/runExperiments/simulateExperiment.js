@@ -4,7 +4,7 @@
 //
 // console.log(simulateExperiment(rawPassengerData,num_passengers,plane_capacity));
 
-function simulateExperiment(rawPassengerData,num_passengers,plane_capacity) {
+export function simulateExperiment(rawPassengerData,num_passengers,plane_capacity) {
   console.log(simulateExperiment(rawPassengerData,num_passengers,plane_capacity));
 
     var results = [];

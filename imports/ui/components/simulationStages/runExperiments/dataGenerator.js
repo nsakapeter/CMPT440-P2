@@ -1,10 +1,13 @@
-function generateAges(minAges, maxAges, noOfPassengers, ageDistributionType) {
+const random = require('random');
+
+export function generateAges(minAges, maxAges, noOfPassengers, ageDistributionType) {
   var ages = [];
   var rand;
-  var normalMu = (parseInt(maxAges) + parseInt(minAges) / 2;
+  var normalMu = (parseInt(maxAges) + parseInt(minAges)) / 2;
     var normalSigma = (parseInt(maxAges) - parseInt(minAges)) / 4;
 
-    var lambda = 1 / normalMu; console.log(lambda);
+    var lambda = 1 / normalMu;
+    console.log(lambda);
 
     switch (ageDistributionType) {
       case "normal":
@@ -41,7 +44,7 @@ function generateAges(minAges, maxAges, noOfPassengers, ageDistributionType) {
 
 
 
-function generateWeights(minLuggaegeWeight, maxLuggaegeWeight, noOfPassengers, LuggageWeightDistributionType) {
+export function generateWeights(minLuggaegeWeight, maxLuggaegeWeight, noOfPassengers, LuggageWeightDistributionType) {
   var weights = [];
   var rand;
   var normalMu = (parseInt(maxLuggaegeWeight) + parseInt(minLuggaegeWeight)) / 2;

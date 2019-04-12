@@ -18,7 +18,7 @@
         <h6 class="element-header">
           Compare Boarding Methods
         </h6>
-        <div class="element-box pl-0">
+        <div class="element-box pl-0" style="max-height: calc(100vh - 400px); overflow: scroll;">
           <table class="table table-lightborder">
             <thead>
               <tr>
@@ -37,7 +37,7 @@
               {{#each results}}
                 <tr>
                   <td>
-                    {{name}}
+                    {{trailName}}
                   </td>
                   <td>
                     {{boardingTime}}

@@ -1,4 +1,6 @@
-function passengerGenerator(agesToSimulate, luggagesToSimulate) {
+const random = require('random');
+
+export function passengerGenerator(agesToSimulate, luggagesToSimulate) {
 
   console.log("Generating");
   var alphabets = ["A", "B", "C", "D", "E", "F"];

@@ -1,8 +1,8 @@
-import 'runExperiments/dataGenerator.js';
-import 'runExperiments/passengerGenerator.js';
-import 'runExperiments/passengerSorter.js';
-import 'runExperiments/simulateExperiment.js';
-
+import {generateAges, generateWeights} from './runExperiments/dataGenerator.js';
+import {passengerGenerator} from './runExperiments/passengerGenerator.js';
+import {passengerSorter} from './runExperiments/passengerSorter.js';
+import {simulateExperiment} from './runExperiments/simulateExperiment.js';
+reactiveTrialResults = [];
 if(Meteor.isClient){
 
 
@@ -10,7 +10,9 @@ if(Meteor.isClient){
 
 
 Template.runExperiments.helpers({
-
+  results(){
+    return reactiveTrialResults.get();
+  }
 });
 
 Template.runExperiments.events({
@@ -22,10 +24,14 @@ Template.runExperiments.events({
 });
 
 Template.runExperiments.onCreated(function() {
+  reactiveTrialResults = new ReactiveVar([]);
 });
 
 Template.runExperiments.onRendered(function() {
   $(document).ready(function(){
+    $('input[type=file]').click(function(e){
+        e.target.attr("value", "");
+    });
      $('input[type="file"]').change(function(e){
          var fileName = e.target.files[0].name;
          runExperiments(e.target.files[0]);
@@ -47,24 +53,28 @@ function runExperiments(file){
         try {
           json = JSON.parse(e.target.result);
           console.log(json);
+          var trialResult = [];
           for (var i = 0; i < json.experimentialData.noOfTrails; i++) {
             console.log(i);
-            var passengers = generatePassengers(json.experimentialData.minAges, json.experimentialData.maxAges, json.experimentialData.minLuggaegeWeight, json.experimentialData.maxLuggaegeWeight, json.experimentialData.noOfPassengers, json.experimentialData.ageDistributionType,json.experimentialData.LuggageWeightDistributionType);
-            var trialResult = [];
+            var passengers = generatePassengers(json.simulationData.minAges, json.simulationData.maxAges, json.simulationData.minLuggaegeWeight, json.simulationData.maxLuggaegeWeight, json.simulationData.noOfPassengers, json.simulationData.ageDistributionType,json.simulationData.LuggageWeightDistributionType);
             for (var j = 0; j < json.experimentialData.algorithms.length; j++) {
               var currentAlgorithm = json.experimentialData.algorithms[j];
-              var sortPassengers = sortPassengers(passengers, currentAlgorithm);
-              var simulationResult = simulate(sortPassengers, json.experimentialData.planeCapacity, json.experimentialData.noOfPassengers);
+              var sortedPassengers = sortPassengers(passengers, currentAlgorithm);
+
+              var simulationResult = simulate(sortedPassengers, json.simulationData.planeCapacity, json.simulationData.noOfPassengers);
               trialResult.push({
                 "name": currentAlgorithm,
                 "boardingTime": simulationResult[0],
-                "conflicts": simulationResult[1]
+                "conflicts": simulationResult[1],
+                "trailName": "Trial " + i + " - " + currentAlgorithm
               });
             }
-            resultsToGraph.push(trialResult);
+            console.log(trialResult);
+            reactiveTrialResults.set(trialResult);
+            // resultsToGraph.push(trialResult);
           }
-          graph(resultsToGraph);
-          alert('json global var has been set to parsed json of this file here it is unevaled = \n' + JSON.stringify(json));
+          graph(trialResult);
+          // alert('json global var has been set to parsed json of this file here it is unevaled = \n' + JSON.stringify(json));
         } catch (ex) {
           alert('ex when trying to parse json = ' + ex);
         }
@@ -87,7 +97,8 @@ function sortPassengers(passengerList, algorithm){
 
 
 function simulate(passengerList,noOfPassengers,planeCapacity){
-  return simulateExperiment(passengerList,noOfPassengers,planeCapacity)
+  // return simulateExperiment(passengerList,noOfPassengers,planeCapacity)
+  return ["2", "4"];
 }
 
 
