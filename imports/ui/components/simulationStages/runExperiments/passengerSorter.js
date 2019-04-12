@@ -1,16 +1,16 @@
 export function passengerSorter(passengerList, algorithm) {
   switch (algorithm) {
     case "age":
-      passengerList.sort(compareAge);
+      passengerList = passengerList.sort(compareAge);
       break;
     case "lw":
-      passengerList.sort(compareLuggageWeight);
+      passengerList = passengerList.sort(compareLuggageWeight);
       break;
     case "row":
-      passengerList.sort(compareRow);
+      passengerList = passengerList.sort(compareRow);
       break;
     case "zone":
-      passengerList.sort(compareZone);
+      passengerList = passengerList.sort(compareZone);
       break;
     case "wilma":
       passengerList = sortByWilma(passengerList);
@@ -76,16 +76,19 @@ function compareZone(a, b) {
   return comparison;
 }
 
-function sortByWilma(passengerList) {
-	passengerList.sort(compareRow);
+function sortByWilma(passengers) {
+  console.log("Sorting by wilma");
+	passengers.sort(compareRow);
+  // console.log(passengers);
 	var sortedByWilma = [];
 	var arrayOrder = [0, 5, 1, 4, 2, 3];
 	for (var k = 0; k < 6; k++) {
 		var i = arrayOrder[k];
-		for (var j = 0; j < passengerList.length/6; j++) {
-			sortedByWilma.push(passengerList[(j*6) + i]);
+		for (var j = 0; j < passengers.length/6; j++) {
+			sortedByWilma.push(passengers[(j*6) + i]);
 		}
 	}
+  // console.log(sortedByWilma);
 	return sortedByWilma;
 }
 

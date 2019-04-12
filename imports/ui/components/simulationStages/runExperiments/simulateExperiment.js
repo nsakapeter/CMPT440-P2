@@ -1,22 +1,17 @@
 export function simulateExperiment(rawPassengerData,num_passengers,plane_capacity) {
-
-  console.log(rawPassengerData);
+      // console.log(rawPassengerData);
       var results = [];
       var conflicts = 0;
       var time = 0;
       var newTime;
       var currentTime;
 
-      width = document.body.clientWidth;
-      var board_x = Math.round(document.body.clientWidth / 2 - (document.body.clientWidth / 3) + 100);
-  //var board_y = Math.round(document.body.clientHeight/2);
-      var board_y = Math.round(Math.max(window.innerHeight, document.body.clientHeight) / 2);
-      var countdown;
-      var panel_play = true;
-      var tickspeed = 20; //interval of a game tick in miliseconds
 
-  //console.log(rawPassengerData);
+      console.log("Mutating");
+      console.log(rawPassengerData);
       var data = ParsePassengerData(rawPassengerData);
+      console.log("Mutated");
+      console.log(rawPassengerData);
       passengerWalkingSpeedScale();
 
   //Run Experiment till completion and return results
@@ -25,18 +20,6 @@ export function simulateExperiment(rawPassengerData,num_passengers,plane_capacit
       }
       return [time,conflicts,newTime];
 
-
-
-  // -------------------- Functions
-
-
-      function showTempPlayButton(toggle) {
-          if (toggle === 1) {
-              d3.select("#temp-pause-play-btn").style("display", "initial");
-          } else {
-              d3.select("#temp-pause-play-btn").style("display", "none");
-          }
-      }
 
   //actions every game tick: data
       function countDown() {
@@ -62,36 +45,36 @@ export function simulateExperiment(rawPassengerData,num_passengers,plane_capacit
 
               if ((curr_passenger.settling === 1) && (parseInt(curr_passenger.wait_current) === 0)) {
                   curr_passenger.settled = 1;
-                  if (curr_passenger.rowNo === "A") {
+                  if (curr_passenger.simulatedRowNo === "A") {
                       curr_passenger.y = -3;
                       if ((ifSettledPassengerAt(curr_passenger.x, curr_passenger.y + 1) || ifSettledPassengerAt(curr_passenger.x, curr_passenger.y + 2))) {
                           curr_passenger.conflict = 1;
                          conflicts++;
                       }
-                  } else if (curr_passenger.rowNo === "B") {
+                  } else if (curr_passenger.simulatedRowNo === "B") {
                       curr_passenger.y = -2;
                       if (ifSettledPassengerAt(curr_passenger.x, curr_passenger.y + 1)) {
                           curr_passenger.conflict = 1;
                           conflicts++;
                       }
-                  } else if (curr_passenger.rowNo === "C") {
+                  } else if (curr_passenger.simulatedRowNo === "C") {
                       curr_passenger.y = -1;
-                  } else if (curr_passenger.rowNo === "D") {
+                  } else if (curr_passenger.simulatedRowNo === "D") {
                       curr_passenger.y = 1;
-                  } else if (curr_passenger.rowNo === "E") {
+                  } else if (curr_passenger.simulatedRowNo === "E") {
                       curr_passenger.y = 2;
                       if (ifSettledPassengerAt(curr_passenger.x, curr_passenger.y - 1)) {
                           curr_passenger.conflict = 1;
                           conflicts++;
                       }
-                  } else if (curr_passenger.rowNo === "F") {
+                  } else if (curr_passenger.simulatedRowNo === "F") {
                       curr_passenger.y = 3;
                       if ((ifSettledPassengerAt(curr_passenger.x, curr_passenger.y - 1) || ifSettledPassengerAt(curr_passenger.x, curr_passenger.y - 2))) {
                           curr_passenger.conflict = 1;
                           conflicts++;
                       }
                   } else {
-                      // console.log(curr_passenger.rowNo);
+                      // console.log(curr_passenger.simulatedRowNo);
                       curr_passenger.y = 6;
                   }
                   curr_passenger.visible_text = 0;
@@ -113,7 +96,7 @@ export function simulateExperiment(rawPassengerData,num_passengers,plane_capacit
               //After move: set for next iteration
 
               //when passenger is at assigned row, add settling time on to wait time as the final countdown
-              if ((curr_passenger.x === parseInt(curr_passenger.seatNo)) && (curr_passenger.settling === 0)) {
+              if ((curr_passenger.x === parseInt(curr_passenger.simulatedSeatNo)) && (curr_passenger.settling === 0)) {
                   curr_passenger.settling = 1;
                   curr_passenger.wait_current = parseInt(curr_passenger.wait_current) + parseInt(curr_passenger.settlingTime);
               }
@@ -163,36 +146,38 @@ export function simulateExperiment(rawPassengerData,num_passengers,plane_capacit
           });
       }
 
-  //add new properties to passenger data; x,y,wait_current,wait_reset: uses maxVisable
-      function ParsePassengerData(passengerDataRaw) {
-          var passengerData = passengerDataRaw;
-          //set every speed to 1 till objects cross 0,0 so que has no wait time before plane boarding
 
-          //traverse from top to bottom, passenger 0 to end
-          for (var i = 0; i < passengerData.length; i++) {
-              //passengers are cued from the -x to 0; 0 being the foremost passenger
-              // passengerData[i].walkingSpeed = passengerData[i].walkingSpeed * 100;
-              passengerData[i].x = -i;
-              passengerData[i].y = 0;
-              passengerData[i].wait_current = 0;
-              passengerData[i].wait_reset = 0;
-              passengerData[i].visible = 0;
-              passengerData[i].visible_text = 1;
-              passengerData[i].settling = 0;
-              passengerData[i].settled = 0;
-              passengerData[i].conflict = 0;
-
-              var serialNo = passengerData[i].serialNo;
-
-              //parse seat and row numbers from serial number
-              for (let j = 0; j < serialNo.length; j++) {
-                  if (!Number.isInteger(parseInt(serialNo[j]))) {
-                      passengerData[i].seatNo = serialNo.substr(0, j);
-                      passengerData[i].rowNo = serialNo[j];
-                      break;
-                  }
-              }
-          }
-          return passengerData;
-      }
 }
+
+//add new properties to passenger data; x,y,wait_current,wait_reset: uses maxVisable
+    function ParsePassengerData(passengerDataRaw) {
+        var passengerData = passengerDataRaw;
+        //set every speed to 1 till objects cross 0,0 so que has no wait time before plane boarding
+
+        //traverse from top to bottom, passenger 0 to end
+        for (var i = 0; i < passengerData.length; i++) {
+            //passengers are cued from the -x to 0; 0 being the foremost passenger
+            // passengerData[i].walkingSpeed = passengerData[i].walkingSpeed * 100;
+            passengerData[i].x = -i;
+            passengerData[i].y = 0;
+            passengerData[i].wait_current = 0;
+            passengerData[i].wait_reset = 0;
+            passengerData[i].visible = 0;
+            passengerData[i].visible_text = 1;
+            passengerData[i].settling = 0;
+            passengerData[i].settled = 0;
+            passengerData[i].conflict = 0;
+
+            var serialNo = passengerData[i].serialNo;
+
+            //parse seat and row numbers from serial number
+            for (let j = 0; j < serialNo.length; j++) {
+                if (!Number.isInteger(parseInt(serialNo[j]))) {
+                    passengerData[i].simulatedSeatNo = serialNo.substr(0, j);
+                    passengerData[i].simulatedRowNo = serialNo[j];
+                    break;
+                }
+            }
+        }
+        return passengerData;
+    }
