@@ -10,7 +10,7 @@
       "LuggageWeightDistributionType" : "normal"
     },
     "experimentialData": {
-        "noOfTrails": 35,
-        "algorithms": ["age","lw","row","zone"]
+        "noOfTrails": 5,
+        "algorithms": ["age","lw","row","zone","random", "wilma"]
     }
 }
