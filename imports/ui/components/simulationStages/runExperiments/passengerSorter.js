@@ -10,10 +10,10 @@ export function passengerSorter(passengerList, algorithm) {
       passengerList.sort(compareRow);
       break;
     case "zone":
-    passengerList.sort(compareZone);
+      passengerList.sort(compareZone);
       break;
     case "wilma":
-    passengerList = sortByWilma(passengerList);
+      passengerList = sortByWilma(passengerList);
       break;
     case "random":
       passengerList = sortbyRandom(passengerList);

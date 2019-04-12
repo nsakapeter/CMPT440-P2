@@ -76,6 +76,7 @@ export function generateWeights(minLuggaegeWeight, maxLuggaegeWeight, noOfPassen
   // var numPassengers = self.data.passengers;
   for (var i = 0; i < noOfPassengers; i++) {
     var newValue = rand();
+    console.log(parseFloat(minLuggaegeWeight));
     while ((newValue < parseFloat(minLuggaegeWeight)) || (newValue > parseFloat(maxLuggaegeWeight))) {
       newValue = rand();
     }

@@ -1,6 +1,6 @@
 export function simulateExperiment(rawPassengerData,num_passengers,plane_capacity) {
 
-  console.log(rawPassengerData + " " + num_passengers + " " + plane_capacity);
+  console.log(rawPassengerData);
       var results = [];
       var conflicts = 0;
       var time = 0;
