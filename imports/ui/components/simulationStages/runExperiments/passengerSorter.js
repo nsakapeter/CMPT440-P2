@@ -1,22 +1,37 @@
 export function passengerSorter(passengerList, algorithm) {
   switch (algorithm) {
-    case "age":
-      passengerList = passengerList.sort(compareAge);
+    case "age-a":
+      passengerList.sort(compareAge);
       break;
-    case "lw":
-      passengerList = passengerList.sort(compareLuggageWeight);
+    case "lw-a":
+      passengerList.sort(compareLuggageWeight);
       break;
-    case "row":
-      passengerList = passengerList.sort(compareRow);
+    case "row-a":
+      passengerList.sort(compareRow);
       break;
-    case "zone":
-      passengerList = passengerList.sort(compareZone);
+    case "zone-a":
+      passengerList.sort(compareZone);
       break;
-    case "wilma":
+    case "wilma-a":
       passengerList = sortByWilma(passengerList);
       break;
+    case "age-d":
+      passengerList.sort(compareAge).reverse();
+      break;
+    case "lw-d":
+      passengerList.sort(compareLuggageWeight).reverse();
+      break;
+    case "row-d":
+      passengerList.sort(compareRow).reverse();
+      break;
+    case "zone-d":
+    passengerList.sort(compareZone).reverse();
+      break;
+    case "wilma-d":
+    passengerList = sortByWilma(passengerList).reverse();
+      break;
     case "random":
-      passengerList = sortbyRandom(passengerList);
+    passengerList = sortbyRandom(passengerList);
       break;
     default:
       break;
