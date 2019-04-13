@@ -35,6 +35,12 @@ Template.boardingProcess.onRendered(function() {
     var panel_play = true;
     var tickspeed = 20; //interval of a game tick in miliseconds
 
+    var conflictStall = 10;
+    var conflicts = 0;
+    var time = 0;
+    var currentTime = 0;
+    var newTime = 0;
+
     var useReactiveVar = true;
     var plane_capacity;
     var num_passengers;
@@ -189,9 +195,11 @@ Template.boardingProcess.onRendered(function() {
             data = ParsePassengerData(rawPassengerData);
 
             //update panel
-            d3.select("#time-btn-value").html(0);
-            d3.select("#hidden-time-btn-value").html(0);
-            d3.select("#conflicts-btn-value").html(0);
+            time = 0;
+            conflicts = 0;
+            d3.select("#time-btn-value").html(time);
+            d3.select("#hidden-time-btn-value").html(time);
+            d3.select("#conflicts-btn-value").html(conflicts);
 
             //play/pause button update
             panel_play = true;
@@ -468,10 +476,11 @@ Template.boardingProcess.onRendered(function() {
             clearInterval(countdown);
         }
         //set countdown to ++
-        d3.select("#hidden-time-btn-value").html(parseInt(d3.select("#hidden-time-btn-value").html())+1);
+        time++;
+        d3.select("#hidden-time-btn-value").html(time);
         //convert time to mins and seconds
-        var currentTime = parseInt(d3.select("#hidden-time-btn-value").html());
-        var newTime = Math.floor(currentTime / 60) + ":" + (currentTime - (Math.floor(currentTime / 60) * 60))
+        currentTime = time;
+        newTime = Math.floor(currentTime / 60) + ":" + (currentTime - (Math.floor(currentTime / 60) * 60));
         d3.select("#time-btn-value").html(newTime);
 
         for(let i=0;i<data.length;i++) {
@@ -491,13 +500,17 @@ Template.boardingProcess.onRendered(function() {
                     curr_passenger.y = -3;
                     if((ifSettledPassengerAt(curr_passenger.x,curr_passenger.y+1)||ifSettledPassengerAt(curr_passenger.x,curr_passenger.y+2))){
                         curr_passenger.conflict = 1;
-                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                        conflicts++;
+                        time+=conflictStall;
+                        d3.select("#conflicts-btn-value").html(conflicts);
                     }
                 } else if (curr_passenger.rowNo==="B") {
                     curr_passenger.y = -2;
                     if(ifSettledPassengerAt(curr_passenger.x,curr_passenger.y+1)){
                         curr_passenger.conflict = 1;
-                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                        conflicts++;
+                        time+=conflictStall;
+                        d3.select("#conflicts-btn-value").html(conflicts);
                     }
                 } else if (curr_passenger.rowNo==="C") {
                     curr_passenger.y = -1;
@@ -507,13 +520,17 @@ Template.boardingProcess.onRendered(function() {
                     curr_passenger.y = 2;
                     if(ifSettledPassengerAt(curr_passenger.x,curr_passenger.y-1)){
                         curr_passenger.conflict = 1;
-                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                        conflicts++;
+                        time+=conflictStall;
+                        d3.select("#conflicts-btn-value").html(conflicts);
                     }
                 } else if (curr_passenger.rowNo==="F") {
                     curr_passenger.y = 3;
                     if((ifSettledPassengerAt(curr_passenger.x,curr_passenger.y-1)||ifSettledPassengerAt(curr_passenger.x,curr_passenger.y-2))){
                         curr_passenger.conflict = 1;
-                        d3.select("#conflicts-btn-value").html(parseInt(d3.select("#conflicts-btn-value").html())+1);
+                        conflicts++;
+                        time+=conflictStall;
+                        d3.select("#conflicts-btn-value").html(conflicts);
                     }
                 } else {
                     // console.log(curr_passenger.rowNo);
