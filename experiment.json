@@ -1,16 +1,16 @@
 {
     "simulationData":{
       "minAges": "18",
-      "maxAges": "64",
+      "maxAges": "78",
       "minLuggaegeWeight": "1.0",
       "maxLuggaegeWeight": "15.0",
-      "planeCapacity" : "66",
-      "noOfPassengers" : "56",
+      "planeCapacity" : "18",
+      "noOfPassengers" : "18",
       "ageDistributionType" : "normal",
       "LuggageWeightDistributionType" : "normal"
     },
     "experimentialData": {
-        "noOfTrails": 5,
-        "algorithms": ["age","lw","row","zone","random", "wilma"]
+        "noOfTrails": 100,
+        "algorithms": ["random","age-a","age-d","lw-a", "lw-d","row-a","row-d","zone-a", "zone-d","wilma", "amwi"]
     }
 }
