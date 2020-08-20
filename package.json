@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.0",
     "calculess": "^1.0.2",
     "d3": "^5.9.2",
     "d3.js": "0.0.2-security",
